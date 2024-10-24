@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "346747717158",
+    "project_id": "puppy-mart",
+    "storage_bucket": "puppy-mart.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:346747717158:android:dcf68d36926a72e37788e7",
+        "android_client_info": {
+          "package_name": "com.example.puppymart"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJr63Fr58RGo1ss9HGBv-pUftzlFZC10o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

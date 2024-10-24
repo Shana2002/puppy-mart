@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:puppymart/services/firebase_service.dart';
 import 'package:puppymart/utilities/decoration_class.dart';
 
 class Loginpage extends StatefulWidget {
@@ -12,15 +14,22 @@ class _LoginpageState extends State<Loginpage> {
   double? _deviceHeight, _deviceWidth;
   final Tween<double> _loginShow = Tween<double>(begin: 0.0, end: 1.0);
   bool selectedForm = false;
-
+  FirebaseService? _firebaseService;
   String? _varEmailLogin,
       _varPasswordLogin,
       _varEmailReg,
       _varPasswordReg,
       _varNameReg;
 
+  String? _errorMessage;
+
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _signupFormKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    super.initState();
+    _firebaseService = GetIt.instance.get<FirebaseService>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +54,7 @@ class _LoginpageState extends State<Loginpage> {
 
   // login form
   Widget _loginForm() {
-    return Container(
+    return SizedBox(
       height: _deviceHeight! * 8.0,
       child: Form(
         key: _loginFormKey,
@@ -74,7 +83,7 @@ class _LoginpageState extends State<Loginpage> {
 
   // register form
   Widget _registerForm() {
-    return Container(
+    return SizedBox(
       height: _deviceHeight! * 8.0,
       child: Form(
         key: _signupFormKey,
@@ -110,15 +119,20 @@ class _LoginpageState extends State<Loginpage> {
     return SizedBox(
       width: _deviceWidth! * 0.80,
       child: TextFormField(
-        onSaved: (_value) {
-          setState(() {
-            _varEmailLogin = _value;
-          });
-        },
-        style: const TextStyle(color: Colors.white),
-        cursorColor: Colors.white,
-        decoration: DecorationClass.userInputs(_deviceWidth!, "Email", "email"),
-      ),
+          onSaved: (_value) {
+            setState(() {
+              _varEmailLogin = _value;
+            });
+          },
+          style: const TextStyle(color: Colors.white),
+          cursorColor: Colors.white,
+          decoration:
+              DecorationClass.userInputs(_deviceWidth!, "Email", "email"),
+          validator: (_value) {
+            bool _resualt = _value!.contains(RegExp(
+                r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"));
+            return _resualt ? null : "Please Enter valid email";
+          }),
     );
   }
 
@@ -132,6 +146,8 @@ class _LoginpageState extends State<Loginpage> {
               _varPasswordLogin = _value;
             });
           },
+          validator: (_value) =>
+              _value!.length > 6 ? null : "Enter Valid Password",
           obscureText: true,
           style: const TextStyle(color: Colors.white),
           cursorColor: Colors.white,
@@ -146,11 +162,7 @@ class _LoginpageState extends State<Loginpage> {
       width: _deviceWidth! * 0.9,
       decoration: DecorationClass.primaryButton(_deviceWidth!),
       child: MaterialButton(
-        onPressed: () {
-          setState(() {
-            selectedForm = !selectedForm;
-          });
-        },
+        onPressed: _loginUser,
         child: const Text(
           "Login",
           style: TextStyle(
@@ -162,10 +174,25 @@ class _LoginpageState extends State<Loginpage> {
 
   // Title
   Widget _title() {
-    return const Text(
-      "Puppy Mart",
-      style: TextStyle(
-          color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
+    return Column(
+      children: [
+        const Text(
+          "Puppy Mart",
+          style: TextStyle(
+              color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        _errorMesage()
+      ],
+    );
+  }
+
+  Widget _errorMesage() {
+    return Text(
+      _errorMessage == null ? "" : _errorMessage!,
+      style: const TextStyle(color: Colors.red),
     );
   }
 
@@ -202,16 +229,20 @@ class _LoginpageState extends State<Loginpage> {
     return SizedBox(
         width: _deviceWidth! * 0.80,
         child: TextFormField(
-          onSaved: (_value) {
-            setState(() {
-              _varEmailReg = _value;
-            });
-          },
-          style: const TextStyle(color: Colors.white),
-          cursorColor: Colors.white,
-          decoration:
-              DecorationClass.userInputs(_deviceWidth!, "Email", "email"),
-        ));
+            onSaved: (_value) {
+              setState(() {
+                _varEmailReg = _value;
+              });
+            },
+            style: const TextStyle(color: Colors.white),
+            cursorColor: Colors.white,
+            decoration:
+                DecorationClass.userInputs(_deviceWidth!, "Email", "email"),
+            validator: (_value) {
+              bool _resualt = _value!.contains(RegExp(
+                  r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"));
+              return _resualt ? null : "Please Enter valid email";
+            }));
   }
 
 // User name feild
@@ -227,6 +258,8 @@ class _LoginpageState extends State<Loginpage> {
         style: const TextStyle(color: Colors.white),
         cursorColor: Colors.white,
         decoration: DecorationClass.userInputs(_deviceWidth!, "Name", "person"),
+        validator: (_value) =>
+            _value!.length > 5 ? null : "Enter Valid Password",
       ),
     );
   }
@@ -241,10 +274,12 @@ class _LoginpageState extends State<Loginpage> {
             _varPasswordReg = _value;
           });
         },
-        style: TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.white),
         cursorColor: Colors.white,
         decoration:
             DecorationClass.userInputs(_deviceWidth!, "Password", "password"),
+        validator: (_value) =>
+            _value!.length > 6 ? null : "Enter Valid Password",
       ),
     );
   }
@@ -254,9 +289,7 @@ class _LoginpageState extends State<Loginpage> {
       width: _deviceWidth! * 0.9,
       decoration: DecorationClass.primaryButton(_deviceWidth!),
       child: MaterialButton(
-        onPressed: () {
-          Navigator.popAndPushNamed(context, 'homepage');
-        },
+        onPressed: _registerUser,
         child: const Text(
           "Register",
           style: TextStyle(
@@ -264,5 +297,35 @@ class _LoginpageState extends State<Loginpage> {
         ),
       ),
     );
+  }
+
+  void _loginUser() async {
+    if (_loginFormKey.currentState!.validate()) {
+      _loginFormKey.currentState!.save();
+      bool _result = await _firebaseService!
+          .loginUser(email: _varEmailLogin!, password: _varPasswordLogin!);
+      if (_result) {
+        Navigator.popAndPushNamed(context, 'homepage');
+      } else {
+        setState(() {
+          _errorMessage = "User Name or Password Wrong";
+        });
+      }
+    }
+  }
+
+  void _registerUser() async {
+    if (_signupFormKey.currentState!.validate()) {
+      _signupFormKey.currentState!.save();
+      bool _result = await _firebaseService!.registerUser(
+          name: _varNameReg!, email: _varEmailReg!, password: _varPasswordReg!);
+      if (_result) {
+        setState(() {
+          selectedForm = !selectedForm;
+        });
+      } else {
+        _errorMessage = "Something went wrong";
+      }
+    }
   }
 }
