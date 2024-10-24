@@ -36,12 +36,20 @@ class _ItemPageState extends State<ItemPage> {
   Widget _topBar() {
     return SizedBox(
       height: _deviceHeight! * 0.05,
-      child: const Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(Icons.arrow_back),
-          Icon(Icons.shopping_cart),
+          GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Icon(Icons.arrow_back)),
+          GestureDetector(
+              onTap: () {
+                Navigator.popAndPushNamed(context, 'cart');
+              },
+              child: Icon(Icons.shopping_cart)),
         ],
       ),
     );
@@ -70,6 +78,11 @@ class _ItemPageState extends State<ItemPage> {
               height: 20,
             ),
             _reviews(),
+            _reviewCard(),
+            const SizedBox(
+              height: 20,
+            ),
+            _addReview(),
           ],
         ),
       ),
@@ -147,16 +160,16 @@ class _ItemPageState extends State<ItemPage> {
   }
 
   Widget _reviews() {
-    return Column(
+    return const Column(
       children: [
-        const Text(
+        Text(
           "Reviews",
           style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
         ),
-        const SizedBox(
+        SizedBox(
           height: 10,
         ),
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
@@ -238,15 +251,43 @@ class _ItemPageState extends State<ItemPage> {
   }
 
   Widget _reviewCard() {
+    return ListView(
+      shrinkWrap: true, // allows ListView to size based on its content
+      physics: NeverScrollableScrollPhysics(),
+      children: [
+        const ListTile(
+          leading: Icon(Icons.person),
+          title: Text("Channa"),
+          subtitle: Text("hi"),
+        ),
+        const ListTile(
+          leading: Icon(Icons.person),
+          title: Text("Channa"),
+          subtitle: Text("hi"),
+        ),
+        const ListTile(
+          leading: Icon(Icons.person),
+          title: Text("Channa"),
+          subtitle: Text("hi"),
+        ),
+      ],
+    );
+  }
+
+  Widget _addReview() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: _deviceWidth!* 0.05),
-      child: ListView(
-        children: [
-          ListTile(
-            leading: Icon(Icons.person),
-            title: Text("Channa"),
-          )
-        ],
+      child: SizedBox(
+        width: _deviceWidth! * 0.80,
+        child: TextFormField(
+          style: TextStyle(color: Colors.white),
+          cursorColor: Colors.white,
+          decoration: const InputDecoration(
+              hintText: "Add Review",
+              border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Color.fromRGBO(47, 47, 47, 1))),
+              focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white))),
+        ),
       ),
     );
   }
