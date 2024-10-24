@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:puppymart/utilities/decoration_class.dart';
 
 class Loginpage extends StatefulWidget {
   const Loginpage({super.key});
@@ -12,6 +13,12 @@ class _LoginpageState extends State<Loginpage> {
   final Tween<double> _loginShow = Tween<double>(begin: 0.0, end: 1.0);
   bool selectedForm = false;
 
+  String? _varEmailLogin,
+      _varPasswordLogin,
+      _varEmailReg,
+      _varPasswordReg,
+      _varNameReg;
+
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _signupFormKey = GlobalKey<FormState>();
 
@@ -22,6 +29,7 @@ class _LoginpageState extends State<Loginpage> {
     return _loginFormGenerate();
   }
 
+  // Logina form entering Animation with switch login and registerform
   Widget _loginFormGenerate() {
     return TweenAnimationBuilder(
         tween: _loginShow,
@@ -35,6 +43,7 @@ class _LoginpageState extends State<Loginpage> {
         child: selectedForm ? _registerForm() : _loginForm());
   }
 
+  // login form
   Widget _loginForm() {
     return Container(
       height: _deviceHeight! * 8.0,
@@ -56,13 +65,14 @@ class _LoginpageState extends State<Loginpage> {
               ],
             ),
             _loginButton(),
-            _SingUpLink()
+            _singUpLink()
           ],
         ),
       ),
     );
   }
 
+  // register form
   Widget _registerForm() {
     return Container(
       height: _deviceHeight! * 8.0,
@@ -76,7 +86,7 @@ class _LoginpageState extends State<Loginpage> {
             _title(),
             Column(
               children: [
-                _NameRegi(),
+                _nameRegi(),
                 SizedBox(
                   height: _deviceHeight! * 0.05,
                 ),
@@ -84,64 +94,57 @@ class _LoginpageState extends State<Loginpage> {
                 SizedBox(
                   height: _deviceHeight! * 0.05,
                 ),
-                _passwordLogin(),
+                _passwordRegi(),
               ],
             ),
             _regisButton(),
-            _SingUpLink()
+            _singUpLink()
           ],
         ),
       ),
     );
   }
 
+  // email for login
   Widget _emailLogin() {
     return SizedBox(
       width: _deviceWidth! * 0.80,
       child: TextFormField(
-        style: TextStyle(color: Colors.white),
+        onSaved: (_value) {
+          setState(() {
+            _varEmailLogin = _value;
+          });
+        },
+        style: const TextStyle(color: Colors.white),
         cursorColor: Colors.white,
-        decoration: const InputDecoration(
-            hintText: "Email",
-            prefixIcon: Icon(
-              Icons.person,
-              color: Colors.white,
-            ),
-            border: OutlineInputBorder(
-                borderSide: BorderSide(color: Color.fromRGBO(47, 47, 47, 1))),
-            focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.white))),
+        decoration: DecorationClass.userInputs(_deviceWidth!, "Email", "email"),
       ),
     );
   }
 
+  // password field for login
   Widget _passwordLogin() {
     return SizedBox(
       width: _deviceWidth! * 0.80,
       child: TextFormField(
-        style: TextStyle(color: Colors.white),
-        cursorColor: Colors.white,
-        decoration: const InputDecoration(
-            hintText: "Password",
-            prefixIcon: Icon(
-              Icons.key,
-              color: Colors.white,
-            ),
-            border: OutlineInputBorder(
-                borderSide: BorderSide(color: Color.fromRGBO(47, 47, 47, 1))),
-            focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.white))),
-      ),
+          onSaved: (_value) {
+            setState(() {
+              _varPasswordLogin = _value;
+            });
+          },
+          obscureText: true,
+          style: const TextStyle(color: Colors.white),
+          cursorColor: Colors.white,
+          decoration: DecorationClass.userInputs(
+              _deviceWidth!, "Password", "password")),
     );
   }
 
+  // Login Button
   Widget _loginButton() {
     return Container(
       width: _deviceWidth! * 0.9,
-      decoration: BoxDecoration(
-        color: const Color.fromRGBO(186, 45, 11, 1),
-        borderRadius: BorderRadius.circular(10),
-      ),
+      decoration: DecorationClass.primaryButton(_deviceWidth!),
       child: MaterialButton(
         onPressed: () {
           setState(() {
@@ -157,6 +160,7 @@ class _LoginpageState extends State<Loginpage> {
     );
   }
 
+  // Title
   Widget _title() {
     return const Text(
       "Puppy Mart",
@@ -165,7 +169,8 @@ class _LoginpageState extends State<Loginpage> {
     );
   }
 
-  Widget _SingUpLink() {
+  // Link for sign up and login page toggle
+  Widget _singUpLink() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -191,63 +196,55 @@ class _LoginpageState extends State<Loginpage> {
     );
   }
 
-  // Register Form
+  // Register Form fields
+  // email for regiser
   Widget _emailRegi() {
     return SizedBox(
-      width: _deviceWidth! * 0.80,
-      child: TextFormField(
-        style: TextStyle(color: Colors.white),
-        cursorColor: Colors.white,
-        decoration: const InputDecoration(
-            hintText: "Email",
-            prefixIcon: Icon(
-              Icons.person,
-              color: Colors.white,
-            ),
-            border: OutlineInputBorder(
-                borderSide: BorderSide(color: Color.fromRGBO(47, 47, 47, 1))),
-            focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.white))),
-      ),
-    );
+        width: _deviceWidth! * 0.80,
+        child: TextFormField(
+          onSaved: (_value) {
+            setState(() {
+              _varEmailReg = _value;
+            });
+          },
+          style: const TextStyle(color: Colors.white),
+          cursorColor: Colors.white,
+          decoration:
+              DecorationClass.userInputs(_deviceWidth!, "Email", "email"),
+        ));
   }
 
-  Widget _NameRegi() {
+// User name feild
+  Widget _nameRegi() {
     return SizedBox(
       width: _deviceWidth! * 0.80,
       child: TextFormField(
-        style: TextStyle(color: Colors.white),
+        onSaved: (_value) {
+          setState(() {
+            _varNameReg = _value;
+          });
+        },
+        style: const TextStyle(color: Colors.white),
         cursorColor: Colors.white,
-        decoration: const InputDecoration(
-            hintText: "Email",
-            prefixIcon: Icon(
-              Icons.person,
-              color: Colors.white,
-            ),
-            border: OutlineInputBorder(
-                borderSide: BorderSide(color: Color.fromRGBO(47, 47, 47, 1))),
-            focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.white))),
+        decoration: DecorationClass.userInputs(_deviceWidth!, "Name", "person"),
       ),
     );
   }
 
+  // Password Login
   Widget _passwordRegi() {
     return SizedBox(
       width: _deviceWidth! * 0.80,
       child: TextFormField(
+        onSaved: (_value) {
+          setState(() {
+            _varPasswordReg = _value;
+          });
+        },
         style: TextStyle(color: Colors.white),
         cursorColor: Colors.white,
-        decoration: const InputDecoration(
-            hintText: "Password",
-            prefixIcon: Icon(
-              Icons.key,
-              color: Colors.white,
-            ),
-            border: OutlineInputBorder(
-                borderSide: BorderSide(color: Color.fromRGBO(47, 47, 47, 1))),
-            focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.white))),
+        decoration:
+            DecorationClass.userInputs(_deviceWidth!, "Password", "password"),
       ),
     );
   }
@@ -255,10 +252,7 @@ class _LoginpageState extends State<Loginpage> {
   Widget _regisButton() {
     return Container(
       width: _deviceWidth! * 0.9,
-      decoration: BoxDecoration(
-        color: const Color.fromRGBO(186, 45, 11, 1),
-        borderRadius: BorderRadius.circular(10),
-      ),
+      decoration: DecorationClass.primaryButton(_deviceWidth!),
       child: MaterialButton(
         onPressed: () {
           Navigator.popAndPushNamed(context, 'homepage');

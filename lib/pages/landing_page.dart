@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:puppymart/pages/loginPage.dart';
+import 'package:puppymart/pages/login_page.dart';
+import 'package:puppymart/utilities/decoration_class.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -97,10 +98,7 @@ class _LandingPageState extends State<LandingPage> {
   Widget _startButton() {
     return Container(
       width: _deviceWidth! * 0.9,
-      decoration: BoxDecoration(
-        color: const Color.fromRGBO(186, 45, 11, 1),
-        borderRadius: BorderRadius.circular(10),
-      ),
+      decoration: DecorationClass.primaryButton(_deviceWidth!),
       child: MaterialButton(
         onPressed: () {
           setState(() {
