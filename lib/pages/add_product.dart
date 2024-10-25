@@ -221,10 +221,12 @@ class _AddProductState extends State<AddProduct> {
   _addProductPhoto() async {
     FilePickerResult? _result =
         await FilePicker.platform.pickFiles(type: FileType.image);
-
-    setState(() {
-      _image = File(_result!.files.first.path!);
+    if(_result!=null){
+      setState(() {
+      _image = File(_result.files.first.path!);
     });
+    }
+    
   }
 
   validDate() async {
