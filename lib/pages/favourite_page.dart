@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:puppymart/widgets/home_page_app_bar.dart';
 
-class FavouritePage extends StatelessWidget {
+class FavouritePage extends StatefulWidget {
   FavouritePage({super.key});
-  double? _deviceHeight, _deviceWidth;
 
+  @override
+  State<FavouritePage> createState() => _FavouritePageState();
+}
+
+class _FavouritePageState extends State<FavouritePage> {
+  double? _deviceHeight, _deviceWidth;
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:puppymart/widgets/home_page_app_bar.dart';
+import 'package:get_it/get_it.dart';
+import 'package:puppymart/utilities/capitalize_text.dart';
+import 'package:puppymart/services/firebase_service.dart';
+import 'package:puppymart/utilities/decoration_class.dart';
+import 'package:file_picker/file_picker.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -10,6 +16,15 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   double? _deviceHeight, _deviceWidth;
+
+  FirebaseService? _firebaseService;
+
+  @override
+  void initState() {
+    super.initState();
+    _firebaseService = GetIt.instance.get<FirebaseService>();
+  }
+
   @override
   Widget build(BuildContext context) {
     _deviceWidth = MediaQuery.of(context).size.width;
@@ -61,22 +76,28 @@ class _ProfilePageState extends State<ProfilePage> {
               borderRadius: BorderRadius.circular(100),
               image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: AssetImage("assests/images/about1.jpg")),
+                  image: NetworkImage(
+                      _firebaseService!.currentUser!["image"].toString())),
             ),
           ),
           Align(
               alignment: Alignment.bottomRight,
-              child: Container(
-                  padding: EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(221, 95, 95, 95),
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  child: Icon(
-                    Icons.camera_alt_rounded,
-                    size: 30,
-                    color: Colors.white,
-                  )))
+              child: GestureDetector(
+                onTap: () {
+                  _uploadProfilePic();
+                },
+                child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(221, 95, 95, 95),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: const Icon(
+                      Icons.camera_alt_rounded,
+                      size: 30,
+                      color: Colors.white,
+                    )),
+              ))
         ],
       ),
     );
@@ -84,26 +105,23 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _name() {
     return Text(
-      "Hansaka Ravishan",
-      style: TextStyle(
-          color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold),
+      CapitalizeText(text: _firebaseService!.currentUser!["name"]).capitalize(),
+      style: const TextStyle(
+        color: Colors.black,
+        fontSize: 25,
+        fontWeight: FontWeight.bold,
+      ),
     );
   }
 
   Widget _changePassword() {
-    return Container(
+    return SizedBox(
       width: _deviceWidth! * 0.9,
       child: TextButton(
         onPressed: () {
           // Button pressed action
         },
-        style: TextButton.styleFrom(
-          foregroundColor: const Color.fromARGB(255, 0, 0, 0),
-          backgroundColor: const Color.fromARGB(94, 156, 156, 156),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
+        style: DecorationClass.secondory,
         child: const Text(
           'Change Password',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
@@ -113,19 +131,13 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _updateProfile() {
-    return Container(
+    return SizedBox(
       width: _deviceWidth! * 0.9,
       child: TextButton(
         onPressed: () {
-          // Button pressed action
+          Navigator.pushNamed(context, 'updateprofile');
         },
-        style: TextButton.styleFrom(
-          foregroundColor: const Color.fromARGB(255, 0, 0, 0),
-          backgroundColor: const Color.fromARGB(94, 156, 156, 156),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
+        style: DecorationClass.secondory,
         child: const Text(
           'Update Profile',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
@@ -135,19 +147,13 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _orderHistory() {
-    return Container(
+    return SizedBox(
       width: _deviceWidth! * 0.9,
       child: TextButton(
         onPressed: () {
-          // Button pressed action
+          Navigator.pushNamed(context, 'orderhistory');
         },
-        style: TextButton.styleFrom(
-          foregroundColor: const Color.fromARGB(255, 0, 0, 0),
-          backgroundColor: const Color.fromARGB(94, 156, 156, 156),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
+        style: DecorationClass.secondory,
         child: const Text(
           'Order History',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
@@ -176,5 +182,11 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
     );
+  }
+
+  _uploadProfilePic() async {
+    FilePickerResult? _result =
+        await FilePicker.platform.pickFiles(type: FileType.image);
+    File _image = File(_result!.files.first.path!);
   }
 }

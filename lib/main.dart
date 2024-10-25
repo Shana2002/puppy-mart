@@ -1,10 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:puppymart/pages/add_product.dart';
+import 'package:puppymart/pages/admin_home.dart';
 import 'package:puppymart/pages/allitems_page.dart';
 import 'package:puppymart/pages/cart.dart';
 import 'package:puppymart/pages/home_page.dart';
 import 'package:puppymart/pages/landing_page.dart';
+import 'package:puppymart/pages/order_history.dart';
+import 'package:puppymart/pages/update_profile.dart';
 import 'package:puppymart/services/firebase_service.dart';
 
 void main() async {
@@ -35,7 +39,11 @@ class MyApp extends StatelessWidget {
         'landing': (context) => LandingPage(),
         'homepage': (context) => HomePage(),
         'cart': (context) => Cart(),
-      },
+        'orderhistory': (context) => OrderHistory(),
+        'updateprofile': (context) => UpdateProfile(),
+        'adminpage' : (context) => AdminHome(),
+        'add_product' : (context) => AddProduct(),
+       },
     );
   }
 }

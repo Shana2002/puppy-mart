@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:puppymart/services/firebase_service.dart';
 
 class HomePageAppBar extends StatefulWidget {
   const HomePageAppBar({super.key});
@@ -9,6 +11,15 @@ class HomePageAppBar extends StatefulWidget {
 
 class _HomePageAppBarState extends State<HomePageAppBar> {
   double? _deviceHeight, _deviceWidth;
+
+  FirebaseService? _firebaseService;
+
+  @override
+  void initState() {
+    super.initState();
+    _firebaseService = GetIt.instance.get<FirebaseService>();
+  }
+
   @override
   Widget build(BuildContext context) {
     _deviceWidth = MediaQuery.of(context).size.width;
@@ -20,11 +31,11 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Column(
+          Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 "Good Morning!",
                 style: TextStyle(
                     color: Colors.black,
@@ -32,8 +43,8 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                     fontSize: 20),
               ),
               Text(
-                "Hansaka",
-                style: TextStyle(
+                _firebaseService!.currentUser!["name"].toString(),
+                style: const TextStyle(
                     color: Color.fromRGBO(186, 45, 11, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 25),

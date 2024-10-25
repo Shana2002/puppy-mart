@@ -305,7 +305,7 @@ class _LoginpageState extends State<Loginpage> {
       bool _result = await _firebaseService!
           .loginUser(email: _varEmailLogin!, password: _varPasswordLogin!);
       if (_result) {
-        Navigator.popAndPushNamed(context, 'homepage');
+        Navigator.popAndPushNamed(context, 'adminpage');
       } else {
         setState(() {
           _errorMessage = "User Name or Password Wrong";

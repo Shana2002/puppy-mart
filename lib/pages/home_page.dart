@@ -32,6 +32,9 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: SafeArea(child: _pages[_currntSelected]),
       bottomNavigationBar: _bottomNavigationBar(),
+      floatingActionButton: Column(children: [
+        FloatingActionButton(onPressed: (){},child: Icon(Icons.add),),
+      ],)
     );
   }
 

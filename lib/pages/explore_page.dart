@@ -15,21 +15,24 @@ class _ExplorePageState extends State<ExplorePage> {
   Widget build(BuildContext context) {
     _deviceWidth = MediaQuery.of(context).size.width;
     _deviceHeight = MediaQuery.of(context).size.height;
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          HomePageAppBar(),
-          _dogBanner(),
-          SizedBox(
-            height: 20,
-          ),
-          _topSaleContainer("Top Sale"),
-          _itemConatiner(),
-          _topSaleContainer("Top Offers"),
-          _itemConatiner(),
-        ],
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            HomePageAppBar(),
+            _dogBanner(),
+            SizedBox(
+              height: 20,
+            ),
+            _topSaleContainer("Top Sale"),
+            _itemConatiner(),
+            _topSaleContainer("Top Offers"),
+            _itemConatiner(),
+          ],
+        ),
       ),
+      
     );
   }
 
