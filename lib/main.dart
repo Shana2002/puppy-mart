@@ -10,6 +10,7 @@ import 'package:puppymart/pages/landing_page.dart';
 import 'package:puppymart/pages/order_history.dart';
 import 'package:puppymart/pages/update_profile.dart';
 import 'package:puppymart/services/firebase_service.dart';
+import 'package:puppymart/utilities/CustomColors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'Poppins',
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
+        colorScheme: ColorScheme.fromSeed(seedColor: Customcolors().accent),
         useMaterial3: true,
       ),
       initialRoute: 'landing',

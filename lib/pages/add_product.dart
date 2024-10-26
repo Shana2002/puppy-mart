@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:puppymart/services/firebase_service.dart';
+import 'package:puppymart/utilities/CustomColors.dart';
 import 'package:puppymart/utilities/decoration_class.dart';
 
 class AddProduct extends StatefulWidget {
@@ -36,8 +37,18 @@ class _AddProductState extends State<AddProduct> {
     _deviceHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.arrow_back),
-        title: Text("Add Product"),
+        leading: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(
+              Icons.arrow_back,
+              color: Customcolors().accent,
+            )),
+        title: const Text(
+          "Add Product",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
       body: SafeArea(
           child: SingleChildScrollView(
@@ -71,7 +82,7 @@ class _AddProductState extends State<AddProduct> {
           image: _image != null
               ? DecorationImage(image: FileImage(_image!), fit: BoxFit.cover)
               : null,
-          color: _image == null ? Colors.grey : null,
+          color: _image == null ? Customcolors().secondory : null,
           borderRadius: BorderRadius.circular(20),
         ),
         child: _image == null
@@ -221,12 +232,11 @@ class _AddProductState extends State<AddProduct> {
   _addProductPhoto() async {
     FilePickerResult? _result =
         await FilePicker.platform.pickFiles(type: FileType.image);
-    if(_result!=null){
+    if (_result != null) {
       setState(() {
-      _image = File(_result.files.first.path!);
-    });
+        _image = File(_result.files.first.path!);
+      });
     }
-    
   }
 
   validDate() async {

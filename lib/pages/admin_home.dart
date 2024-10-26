@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:puppymart/services/firebase_service.dart';
+import 'package:puppymart/utilities/CustomColors.dart';
 
 class AdminHome extends StatefulWidget {
   const AdminHome({super.key});
@@ -27,10 +28,12 @@ class _AdminHomeState extends State<AdminHome> {
     _deviceHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Customcolors().primary,
+        foregroundColor: Customcolors().background,
         onPressed: () {
           Navigator.pushNamed(context, 'add_product');
         },
-        label: Text("Add Product"),
+        label: const Text("Add Product"),
         icon: Icon(Icons.add),
       ),
       body: SafeArea(
@@ -40,13 +43,11 @@ class _AdminHomeState extends State<AdminHome> {
             children: [
               Container(
                 height: _deviceHeight! * 0.07,
-                color: Colors.yellow,
                 child: _appBar(),
               ),
               _buttonRow(),
               Container(
-                height: 400,
-                color: const Color.fromARGB(255, 170, 170, 170),
+                height: _deviceHeight! * 0.77,
                 child: _productList(),
               )
             ],
@@ -65,7 +66,10 @@ class _AdminHomeState extends State<AdminHome> {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
         ),
         GestureDetector(
-          child: Icon(Icons.logout),
+          child: Icon(
+            Icons.logout,
+            color: Customcolors().accent,
+          ),
           onTap: () {},
         )
       ],
@@ -106,8 +110,49 @@ class _AdminHomeState extends State<AdminHome> {
                 itemBuilder: (BuildContext _context, int _index) {
                   Map _product = _products[_index];
                   print(_product);
-                  return Container(
-                    child: Text(_product["name"]),
+                  return GestureDetector(
+                    onHorizontalDragEnd: (_details) {
+                      print("object");
+                    },
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: _deviceHeight! * 0.01),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(32),
+                          bottomLeft: Radius.circular(32),
+                        ),
+                        child: ListTile(
+                          tileColor: Customcolors().secondory,
+                          leading: Container(
+                            width: _deviceWidth! * 0.20,
+                            height: _deviceWidth! * 0.20,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(
+                                    _product['image'],
+                                  )),
+                            ),
+                          ),
+                          title: Text(
+                            _product['name'],
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w600),
+                          ),
+                          trailing: Icon(
+                            Icons.arrow_right_alt,
+                            color: Customcolors().accent,
+                          ),
+                          subtitle: Text(
+                            _product['description'].toString(),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ),
+                    ),
                   );
                 });
           } else {

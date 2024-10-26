@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:puppymart/utilities/CustomColors.dart';
 
 class DecorationClass {
   static BoxDecoration primaryButton(double _width) {
@@ -23,8 +24,8 @@ class DecorationClass {
           _getIconByString(_icon),
           color: Colors.white,
         ),
-        border: const OutlineInputBorder(
-            borderSide: BorderSide(color: Color.fromRGBO(47, 47, 47, 1))),
+        border: OutlineInputBorder(
+            borderSide: BorderSide(color: Customcolors().accent)),
         focusedBorder:
             OutlineInputBorder(borderSide: BorderSide(color: Colors.white)));
   }
@@ -48,6 +49,6 @@ class DecorationClass {
       border: const OutlineInputBorder(
             borderSide: BorderSide(color: Color.fromRGBO(47, 47, 47, 1))),
         focusedBorder:
-            const OutlineInputBorder(borderSide: BorderSide(color: const Color.fromARGB(255, 255, 60, 60))));
+            OutlineInputBorder(borderSide: BorderSide(color: Customcolors().accent)));
   }
 }
