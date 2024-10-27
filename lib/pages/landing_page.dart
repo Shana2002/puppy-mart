@@ -51,7 +51,7 @@ class _LandingPageState extends State<LandingPage> {
     return Align(
       alignment: Alignment.bottomCenter,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 400),
+        duration: const Duration(milliseconds: 1000),
         curve: Curves.easeIn,
         width: _deviceWidth,
         height: selected ? _deviceHeight! * 0.8 : _deviceHeight! * 0.5,

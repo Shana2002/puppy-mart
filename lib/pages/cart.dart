@@ -112,10 +112,10 @@ class _CartState extends State<Cart> {
             width: _deviceWidth! * 0.9,
             child: TextButton(
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (BuildContext _context) {
-                  return const ItemPage();
-                }));
+                // Navigator.push(context,
+                //     MaterialPageRoute(builder: (BuildContext _context) {
+                //   return const ItemPage();
+                // }));
               },
               style: TextButton.styleFrom(
                 foregroundColor: const Color.fromARGB(255, 255, 255, 255),

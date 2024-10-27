@@ -167,7 +167,7 @@ class _ProfilePageState extends State<ProfilePage> {
       width: _deviceWidth! * 0.9,
       child: TextButton(
         onPressed: () {
-          // Button pressed action
+          Navigator.popAndPushNamed(context, 'landing');
         },
         style: TextButton.styleFrom(
           foregroundColor: const Color.fromARGB(255, 255, 255, 255),

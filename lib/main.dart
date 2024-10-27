@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
       title: 'Puppy Mart',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        scaffoldBackgroundColor: Customcolors().background,
         fontFamily: 'Poppins',
         colorScheme: ColorScheme.fromSeed(seedColor: Customcolors().accent),
         useMaterial3: true,

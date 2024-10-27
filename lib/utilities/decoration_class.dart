@@ -4,7 +4,7 @@ import 'package:puppymart/utilities/CustomColors.dart';
 class DecorationClass {
   static BoxDecoration primaryButton(double _width) {
     return BoxDecoration(
-      color: const Color.fromRGBO(186, 45, 11, 1),
+      color: Customcolors().primary,
       borderRadius: BorderRadius.circular(10),
     );
   }

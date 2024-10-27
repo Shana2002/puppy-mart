@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:puppymart/services/firebase_service.dart';
+import 'package:puppymart/utilities/CustomColors.dart';
 
 class HomePageAppBar extends StatefulWidget {
   const HomePageAppBar({super.key});
@@ -44,8 +45,8 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
               ),
               Text(
                 _firebaseService!.currentUser!["name"].toString(),
-                style: const TextStyle(
-                    color: Color.fromRGBO(186, 45, 11, 1),
+                style: TextStyle(
+                    color: Customcolors().primary,
                     fontWeight: FontWeight.bold,
                     fontSize: 25),
               )
@@ -60,6 +61,7 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                   child: Icon(
                     Icons.shopping_cart,
                     size: 30,
+                    color: Customcolors().accent,
                   )),
               SizedBox(
                 width: 10,
@@ -67,6 +69,7 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
               Icon(
                 Icons.notifications,
                 size: 30,
+                color: Customcolors().accent,
               )
             ],
           )

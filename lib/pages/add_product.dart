@@ -126,7 +126,7 @@ class _AddProductState extends State<AddProduct> {
             const SizedBox(
               height: 10,
             ),
-            _startButton()
+            _addProductButton()
           ],
         ));
   }
@@ -212,16 +212,16 @@ class _AddProductState extends State<AddProduct> {
     );
   }
 
-  Widget _startButton() {
+  Widget _addProductButton() {
     return Container(
-      width: _deviceWidth! * 0.9,
+      width: _deviceWidth! * 0.8,
       decoration: DecorationClass.primaryButton(_deviceWidth!),
       child: MaterialButton(
         onPressed: () {
           validDate();
         },
         child: const Text(
-          "Get Start",
+          "Add Product",
           style: TextStyle(
               color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
         ),

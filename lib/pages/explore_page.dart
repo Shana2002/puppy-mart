@@ -1,5 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:puppymart/services/firebase_service.dart';
+import 'package:puppymart/utilities/capitalize_text.dart';
 import 'package:puppymart/widgets/home_page_app_bar.dart';
+import 'package:puppymart/widgets/rating_star.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -10,6 +16,14 @@ class ExplorePage extends StatefulWidget {
 
 class _ExplorePageState extends State<ExplorePage> {
   double? _deviceHeight, _deviceWidth;
+
+  FirebaseService? _firebaseService;
+
+  @override
+  void initState() {
+    super.initState();
+    _firebaseService = GetIt.instance.get<FirebaseService>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +46,6 @@ class _ExplorePageState extends State<ExplorePage> {
           ],
         ),
       ),
-      
     );
   }
 
@@ -40,7 +53,7 @@ class _ExplorePageState extends State<ExplorePage> {
     return Container(
       width: _deviceWidth! * 0.80,
       height: _deviceHeight! * 0.20,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           image: DecorationImage(
               fit: BoxFit.contain,
               image: AssetImage("assests/images/dogBanner.png"))),
@@ -75,99 +88,58 @@ class _ExplorePageState extends State<ExplorePage> {
           bottom: _deviceHeight! * 0.02),
       // margin: EdgeInsets.symmetric(horizontal: _deviceWidth!*0.05,vertical: _deviceHeight!*0.02),
       height: 200,
-      child: ListView(
-        // This next line does the trick.
-        scrollDirection: Axis.horizontal,
-        children: <Widget>[
-          _item(),
-          const SizedBox(
-            width: 10,
-          ),
-          _item(),
-          const SizedBox(
-            width: 10,
-          ),
-          _item(),
-          const SizedBox(
-            width: 10,
-          ),
-          _item(),
-          const SizedBox(
-            width: 10,
-          ),
-          _item(),
-          const SizedBox(
-            width: 10,
-          ),
-          _item(),
-          const SizedBox(
-            width: 10,
-          ),
-          
-        ],
-      ),
+      child: _prodctListHorizontal(),
     );
   }
 
-  Widget _item() {
-    return Container(
-      width: 160,
-      child: Column(
-        children: [
-          Container(
-            width: 160,
-            height: 150,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                  fit: BoxFit.contain,
-                  image: AssetImage("assests/images/food.png")),
-            ),
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Text(
-            "Pedegree 400g",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.star,
-                    size: 13,
-                    color: Colors.yellow,
-                  ),
-                  Icon(
-                    Icons.star,
-                    size: 13,
-                    color: Colors.yellow,
-                  ),
-                  Icon(
-                    Icons.star,
-                    size: 13,
-                    color: Colors.yellow,
-                  ),
-                  Icon(
-                    Icons.star,
-                    size: 13,
-                    color: Colors.yellow,
-                  ),
-                  Icon(
-                    Icons.star,
-                    size: 13,
-                    color: Colors.black,
-                  ),
-                ],
-              ),
-              Text("1500")
-            ],
-          )
-        ],
-      ),
-    );
+  Widget _prodctListHorizontal() {
+    return StreamBuilder<QuerySnapshot>(
+        stream: _firebaseService!.getProducts(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            List _products = snapshot.data!.docs.map((e) => e.data()).toList();
+            return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: _products.length,
+                itemBuilder: (context, index) {
+                  Map _product = _products[index];
+                  return Container(
+                    margin: EdgeInsets.symmetric(horizontal: _deviceWidth!*0.05),
+                    width: 160,
+                    child: Column(children: [
+                      Container(
+                        width: 160,
+                        height: 150,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(_product['image'])),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        CapitalizeText(text: _product['name']).capitalize(),
+                        overflow: TextOverflow.fade,
+                        maxLines: 1,
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w800),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const RatingStar(size: 13),
+                          Text(_product['price'].toString())
+                        ],
+                      )
+                    ]),
+                  );
+                });
+          } else {
+            return const CircularProgressIndicator();
+          }
+        });
   }
 }

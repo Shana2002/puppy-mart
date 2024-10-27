@@ -111,4 +111,12 @@ class FirebaseService {
         .orderBy("timestamp", descending: true)
         .snapshots();
   }
+
+  Future<void> logout() async {
+    await _auth.signOut();
+  }
+
+  String? userName() {
+    return _auth.currentUser!.email;
+  }
 }

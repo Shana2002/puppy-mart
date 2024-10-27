@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ItemPage extends StatefulWidget {
-  const ItemPage({super.key});
+  final Map product;
+  const ItemPage({super.key, required this.product});
 
   @override
   State<ItemPage> createState() => _ItemPageState();
@@ -93,35 +94,37 @@ class _ItemPageState extends State<ItemPage> {
     return Container(
       width: _deviceWidth! * 0.9,
       height: _deviceHeight! * 0.4,
-      decoration: const BoxDecoration(
+      decoration:  BoxDecoration(
           image: DecorationImage(
               fit: BoxFit.contain,
-              image: AssetImage("assests/images/food.png"))),
+              image: NetworkImage(widget.product['image']))),
     );
   }
 
   Widget _descriptionTitle() {
-    return const Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Text(
-          "Pedigree",
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
-        ),
-      ],
+    return SizedBox(
+      width: _deviceWidth!*0.9,
+      child: Text(
+        widget.product["name"],
+        style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
+        overflow: TextOverflow.ellipsis,
+        maxLines: 2,
+        textAlign: TextAlign.start,
+      ),
     );
   }
 
   Widget _priceConatianer() {
-    return const Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          "LKR 12500",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          "LKR ${widget.product['price']}",
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          
         ),
-        Row(
+        const Row(
           children: [
             Icon(
               Icons.star,
@@ -155,8 +158,8 @@ class _ItemPageState extends State<ItemPage> {
   }
 
   Widget _descriptionDetails() {
-    return const Text(
-        "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).");
+    return Text(
+        widget.product['description']);
   }
 
   Widget _reviews() {
