@@ -63,10 +63,27 @@ class FirebaseService {
     }
   }
 
-  bool uploadProfilePic(File image) {
-    String _userId = _auth.currentUser!.uid;
-    String _fileName = Timestamp.now().millisecondsSinceEpoch.toString();
-    return true;
+  Future<bool> uploadProfilePic(File image) async {
+    try {
+      String _userId = _auth.currentUser!.uid;
+      String _fileName = Timestamp.now().millisecondsSinceEpoch.toString() +
+          _auth.currentUser!.email.toString();
+      UploadTask _task =
+          _cloud.ref('images/users/$_userId/$_fileName').putFile(image);
+      return await _task.then((_snapshot) async {
+        String _imageLink = await _snapshot.ref.getDownloadURL();
+        await _db.collection(USER_COLLECTION).doc(_userId).set({
+          "name": currentUser!["name"],
+          "email": currentUser!["email"],
+          "image": _imageLink,
+        });
+        currentUser = await getUserData(uid: _userId);
+        return true;
+      });
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 
   Future<bool> addProduct(

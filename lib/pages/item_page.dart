@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:puppymart/class/cart_class.dart';
 
 class ItemPage extends StatefulWidget {
   final Map product;
@@ -10,6 +12,14 @@ class ItemPage extends StatefulWidget {
 
 class _ItemPageState extends State<ItemPage> {
   double? _deviceHeight, _deviceWidth;
+
+  CartClass? _cart;
+
+  @override
+  void initState() {
+    super.initState();
+    _cart = GetIt.instance.get<CartClass>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +104,7 @@ class _ItemPageState extends State<ItemPage> {
     return Container(
       width: _deviceWidth! * 0.9,
       height: _deviceHeight! * 0.4,
-      decoration:  BoxDecoration(
+      decoration: BoxDecoration(
           image: DecorationImage(
               fit: BoxFit.contain,
               image: NetworkImage(widget.product['image']))),
@@ -103,7 +113,7 @@ class _ItemPageState extends State<ItemPage> {
 
   Widget _descriptionTitle() {
     return SizedBox(
-      width: _deviceWidth!*0.9,
+      width: _deviceWidth! * 0.9,
       child: Text(
         widget.product["name"],
         style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
@@ -122,7 +132,6 @@ class _ItemPageState extends State<ItemPage> {
         Text(
           "LKR ${widget.product['price']}",
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          
         ),
         const Row(
           children: [
@@ -158,8 +167,7 @@ class _ItemPageState extends State<ItemPage> {
   }
 
   Widget _descriptionDetails() {
-    return Text(
-        widget.product['description']);
+    return Text(widget.product['description']);
   }
 
   Widget _reviews() {
@@ -234,7 +242,9 @@ class _ItemPageState extends State<ItemPage> {
           SizedBox(
             width: _deviceWidth! * 0.43,
             child: TextButton(
-              onPressed: () {},
+              onPressed: () {
+                _cart!.addTocart(widget.product['productId'].toString(), 1);
+              },
               style: TextButton.styleFrom(
                 foregroundColor: const Color.fromARGB(255, 255, 255, 255),
                 backgroundColor: const Color.fromARGB(255, 255, 83, 83),

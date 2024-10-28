@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:puppymart/class/cart_class.dart';
 import 'package:puppymart/services/firebase_service.dart';
 import 'package:puppymart/utilities/decoration_class.dart';
 
@@ -305,13 +306,14 @@ class _LoginpageState extends State<Loginpage> {
       bool _result = await _firebaseService!
           .loginUser(email: _varEmailLogin!, password: _varPasswordLogin!);
       if (_result) {
-        if(_firebaseService!.userName()=='admin@puppymart.com'){
+        if (_firebaseService!.userName() == 'admin@puppymart.com') {
           Navigator.popAndPushNamed(context, 'adminpage');
-        }else
-        {
+        } else {
+          GetIt.instance.registerSingleton<CartClass>(
+            CartClass(cusID: _firebaseService!.userName().toString())
+          );
           Navigator.popAndPushNamed(context, 'homepage');
         }
-        
       } else {
         setState(() {
           _errorMessage = "User Name or Password Wrong";

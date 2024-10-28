@@ -188,5 +188,15 @@ class _ProfilePageState extends State<ProfilePage> {
     FilePickerResult? _result =
         await FilePicker.platform.pickFiles(type: FileType.image);
     File _image = File(_result!.files.first.path!);
+    if (_result != null) {
+      bool _upload = await _firebaseService!.uploadProfilePic(_image);
+      if(_upload){
+        setState(() {
+          
+        });
+      }
+    }
+
+
   }
 }
