@@ -141,7 +141,7 @@ class _AllitemsPageState extends State<AllitemsPage> {
     return Container(
       margin: EdgeInsets.only(top: _deviceHeight! * 0.03),
       padding: EdgeInsets.symmetric(horizontal: _deviceWidth! * 0.05),
-      height: _deviceHeight! * 0.65,
+      height: _deviceHeight! * 0.64,
       child: StreamBuilder(
           stream: _firebaseService!.getProducts(),
           builder: (_context, snapshot) {

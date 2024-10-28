@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:puppymart/services/firebase_service.dart';
 import 'package:puppymart/utilities/CustomColors.dart';
+import 'package:puppymart/utilities/capitalize_text.dart';
 
 class HomePageAppBar extends StatefulWidget {
   const HomePageAppBar({super.key});
@@ -26,7 +27,7 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
     _deviceWidth = MediaQuery.of(context).size.width;
     _deviceHeight = MediaQuery.of(context).size.height;
     return Container(
-      height: _deviceHeight! * 0.10,
+      height: _deviceHeight! * 0.07,
       padding: EdgeInsets.symmetric(horizontal: _deviceWidth! * 0.05),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -41,14 +42,14 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w600,
-                    fontSize: 20),
+                    fontSize: 14),
               ),
               Text(
-                _firebaseService!.currentUser!["name"].toString(),
+                CapitalizeText(text: _firebaseService!.currentUser!["name"].toString()).capitalize(),
                 style: TextStyle(
                     color: Customcolors().primary,
                     fontWeight: FontWeight.bold,
-                    fontSize: 25),
+                    fontSize: 18),
               )
             ],
           ),
