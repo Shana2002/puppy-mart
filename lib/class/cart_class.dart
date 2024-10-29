@@ -1,10 +1,15 @@
+import 'package:get_it/get_it.dart';
+import 'package:puppymart/services/firebase_service.dart';
+
 class CartClass {
   String cusID;
   String? productId;
   String? qty;
   List cart = [];
-
-  CartClass({required this.cusID});
+  FirebaseService? _firebaseService;
+  CartClass({required this.cusID}) {
+    _firebaseService = GetIt.instance.get<FirebaseService>();
+  }
 
   void addTocart(String id, int qty) {
     int _index = 0;
@@ -23,7 +28,13 @@ class CartClass {
       Map _cart = {"id": id, "qty": qty};
       cart.add(_cart);
     }
-
-    print(cart);
+    // fetchDataAndPrint();
   }
+
+  // void fetchDataAndPrint() async {
+  //   List<Map<String, dynamic>> dataList = await _firebaseService!.getDataList();
+
+  //   // Print each document data
+  //   print(dataList[1]['name']);
+  // }
 }

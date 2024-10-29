@@ -136,4 +136,23 @@ class FirebaseService {
   String? userName() {
     return _auth.currentUser!.email;
   }
+
+  // trail
+  Future<List<Map<String, dynamic>>> getDataList() async {
+    QuerySnapshot qShot = await _db
+        .collection(PRODUCT_COLLECTION) // Replace with your collection name
+        .orderBy("timestamp", descending: true)
+        .get();
+
+    // Map each document to a Map<String, dynamic> and return as a list
+    return qShot.docs.map((doc) {
+      return doc.data() as Map<String, dynamic>;
+    }).toList();
+  }
+
+  Future<Map<String, dynamic>> getProductDetails(String _productId) async {
+    DocumentSnapshot query =
+        await _db.collection(PRODUCT_COLLECTION).doc(_productId).get();
+    return query.data() as Map<String, dynamic>;
+  }
 }

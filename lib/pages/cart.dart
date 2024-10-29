@@ -1,16 +1,28 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:puppymart/class/cart_class.dart';
 import 'package:puppymart/pages/item_page.dart';
+import 'package:puppymart/services/firebase_service.dart';
 
 class Cart extends StatefulWidget {
   const Cart({super.key});
 
   @override
   State<Cart> createState() => _CartState();
-
 }
 
 class _CartState extends State<Cart> {
   double? _deviceHeight, _deviceWidth;
+  CartClass? _cartClass;
+  FirebaseService? _firebaseService;
+
+  @override
+  void initState() {
+    super.initState();
+    _cartClass = GetIt.instance.get<CartClass>();
+    _firebaseService = GetIt.instance.get<FirebaseService>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,17 +79,13 @@ class _CartState extends State<Cart> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: _deviceWidth! * 0.05),
       height: _deviceHeight! * 0.7,
-      child: _cartView(),
+      child: _cartView1(),
     );
   }
 
   Widget _cartView() {
     return ListView(
-      children: [
-        _listTile(),
-        _listTile(),
-        _listTile(),
-      ],
+      children: [],
     );
   }
 
@@ -136,7 +144,9 @@ class _CartState extends State<Cart> {
     );
   }
 
-  Widget _listTile() {
+  Future<Widget> _listTile(Map? _item) async {
+    String _productId = _item!['id'];
+    Map<String, dynamic> _productDetail = await _firebaseService!.getProductDetails(_productId);
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       padding: EdgeInsets.symmetric(horizontal: _deviceHeight! * 0.01),
@@ -162,11 +172,11 @@ class _CartState extends State<Cart> {
               Container(
                 height: 90,
                 width: 100,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                     color: Colors.white,
                     image: DecorationImage(
                         fit: BoxFit.contain,
-                        image: AssetImage("assests/images/food.png"))),
+                        image: NetworkImage(_productDetail['image']))),
               ),
               const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -202,7 +212,7 @@ class _CartState extends State<Cart> {
                   child: Icon(Icons.add),
                 ),
                 Text(
-                  "1",
+                  _item!['qty'].toString(),
                   style: TextStyle(fontSize: 15),
                 ),
                 Container(
@@ -214,5 +224,21 @@ class _CartState extends State<Cart> {
         ],
       ),
     );
+  }
+
+  Widget _cartView1() {
+    List? _cart = _cartClass!.cart;
+    return ListView.builder(
+        itemCount: _cart.length,
+        itemBuilder: (BuildContext _context, int _index) {
+          if (_cart.isNotEmpty) {
+            Map _itemCart = _cart[_index];
+            return _listTile(_itemCart);
+          } else {
+            return Center(
+              child: Text("empty"),
+            );
+          }
+        });
   }
 }
