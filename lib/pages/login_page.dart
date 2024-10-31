@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:puppymart/class/cart_class.dart';
+import 'package:puppymart/providers/cart_provider.dart';
 import 'package:puppymart/services/firebase_service.dart';
 import 'package:puppymart/utilities/decoration_class.dart';
 
@@ -310,8 +311,8 @@ class _LoginpageState extends State<Loginpage> {
           Navigator.popAndPushNamed(context, 'adminpage');
         } else {
           GetIt.instance.registerSingleton<CartClass>(
-            CartClass(cusID: _firebaseService!.userName().toString())
-          );
+              CartClass(cusID: _firebaseService!.userName().toString()));
+          GetIt.instance.registerSingleton<CartProvider>(CartProvider());
           Navigator.popAndPushNamed(context, 'homepage');
         }
       } else {

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:puppymart/class/cart_class.dart';
+import 'package:puppymart/providers/cart_provider.dart';
+import 'package:puppymart/widgets/home_page_app_bar.dart';
 
 class ItemPage extends StatefulWidget {
   final Map product;
@@ -12,13 +14,14 @@ class ItemPage extends StatefulWidget {
 
 class _ItemPageState extends State<ItemPage> {
   double? _deviceHeight, _deviceWidth;
-
   CartClass? _cart;
+  CartProvider? _cartProvider;
 
   @override
   void initState() {
     super.initState();
     _cart = GetIt.instance.get<CartClass>();
+    _cartProvider = GetIt.instance.get<CartProvider>();
   }
 
   @override
@@ -243,7 +246,9 @@ class _ItemPageState extends State<ItemPage> {
             width: _deviceWidth! * 0.43,
             child: TextButton(
               onPressed: () {
-                _cart!.addTocart(widget.product['productId'].toString(), 1,widget.product['price']);
+                _cart!.addTocart(widget.product['productId'].toString(), 1,
+                    widget.product['price']);
+                _cartProvider!.updateCount();
               },
               style: TextButton.styleFrom(
                 foregroundColor: const Color.fromARGB(255, 255, 255, 255),
