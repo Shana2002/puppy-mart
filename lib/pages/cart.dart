@@ -102,7 +102,7 @@ class _CartState extends State<Cart> {
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -112,7 +112,7 @@ class _CartState extends State<Cart> {
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
               ),
               Text(
-                "LKR 1920",
+                "LKR ${_cartClass!.calculateSum().toString()}",
                 style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
               ),
             ],
@@ -144,86 +144,134 @@ class _CartState extends State<Cart> {
     );
   }
 
-  Future<Widget> _listTile(Map? _item) async {
+  Widget _listTile(Map? _item, int index) {
     String _productId = _item!['id'];
-    Map<String, dynamic> _productDetail = await _firebaseService!.getProductDetails(_productId);
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      padding: EdgeInsets.symmetric(horizontal: _deviceHeight! * 0.01),
-      height: 100,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.15),
-              spreadRadius: 0,
-              blurRadius: 20, // Increased blur radius
-              offset: Offset(0, 4),
-            )
-          ]),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            children: [
-              Container(
-                height: 90,
-                width: 100,
+    return FutureBuilder<Map<String, dynamic>>(
+        future: _firebaseService!.getProductDetails(_productId),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            Map<String, dynamic> _productDetail = snapshot.data!;
+            return Dismissible(
+              key: ValueKey<int>(index),
+              onDismissed: (direction) {
+                setState(() {
+                  _cartClass!.removeCart(index);
+                });
+              },
+              direction: DismissDirection.startToEnd,
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 10),
+                padding:
+                    EdgeInsets.symmetric(horizontal: _deviceHeight! * 0.01),
+                height: 100,
                 decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
                     color: Colors.white,
-                    image: DecorationImage(
-                        fit: BoxFit.contain,
-                        image: NetworkImage(_productDetail['image']))),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.15),
+                        spreadRadius: 0,
+                        blurRadius: 20, // Increased blur radius
+                        offset: Offset(0, 4),
+                      )
+                    ]),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          height: 90,
+                          width: 100,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              image: DecorationImage(
+                                  fit: BoxFit.contain,
+                                  image:
+                                      NetworkImage(_productDetail['image']))),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: _deviceWidth! * 0.45,
+                              child: Text(
+                                _productDetail['name'],
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                style: const TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 7,
+                            ),
+                            Text(
+                              _productDetail['price'].toString(),
+                              style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: _deviceHeight! * 0.01),
+                      height: 85,
+                      width: 30,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: const Color.fromARGB(64, 167, 167, 167),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _cartClass!.addTocart(
+                                    _productDetail['productId'],
+                                    1,
+                                    _productDetail['price']);
+                              });
+                            },
+                            child: Container(
+                              child: Icon(Icons.add),
+                            ),
+                          ),
+                          Text(
+                            _item['qty'].toString(),
+                            style: TextStyle(fontSize: 15),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _cartClass!
+                                    .minesCart(_productDetail['productId']);
+                              });
+                            },
+                            child: Container(
+                              child: Icon(Icons.remove),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Pedegree 400g",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    height: 7,
-                  ),
-                  Text(
-                    "LKR 1000",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              )
-            ],
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: _deviceHeight! * 0.01),
-            height: 85,
-            width: 30,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: const Color.fromARGB(64, 167, 167, 167),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  child: Icon(Icons.add),
-                ),
-                Text(
-                  _item!['qty'].toString(),
-                  style: TextStyle(fontSize: 15),
-                ),
-                Container(
-                  child: Icon(Icons.remove),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+            );
+          } else {
+            return Container();
+          }
+        });
   }
 
   Widget _cartView1() {
@@ -233,7 +281,7 @@ class _CartState extends State<Cart> {
         itemBuilder: (BuildContext _context, int _index) {
           if (_cart.isNotEmpty) {
             Map _itemCart = _cart[_index];
-            return _listTile(_itemCart);
+            return _listTile(_itemCart, _index);
           } else {
             return Center(
               child: Text("empty"),

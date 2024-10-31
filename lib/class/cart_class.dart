@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:puppymart/services/firebase_service.dart';
 
@@ -11,7 +12,7 @@ class CartClass {
     _firebaseService = GetIt.instance.get<FirebaseService>();
   }
 
-  void addTocart(String id, int qty) {
+  void addTocart(String id, int qty, int price) {
     int _index = 0;
     bool isHave = false;
 
@@ -25,16 +26,53 @@ class CartClass {
     if (isHave) {
       cart[_index]["qty"] = cart[_index]["qty"] + qty;
     } else {
-      Map _cart = {"id": id, "qty": qty};
+      Map _cart = {"id": id, "qty": qty, "price": price};
       cart.add(_cart);
     }
-    // fetchDataAndPrint();
+    calculateSum();
   }
 
-  // void fetchDataAndPrint() async {
-  //   List<Map<String, dynamic>> dataList = await _firebaseService!.getDataList();
+  void minesCart(String id) {
+    int _index = 0;
+    bool isRemove = false;
 
-  //   // Print each document data
-  //   print(dataList[1]['name']);
-  // }
+    for (var element in cart) {
+      if (element["id"] == id) {
+        element["qty"] <= 1 ? isRemove = true : isRemove = false;
+        break;
+      }
+      _index++;
+    }
+
+    isRemove
+        ? removeCart(_index)
+        : cart[_index]['qty'] = cart[_index]['qty'] - 1;
+    calculateSum();
+  }
+
+  num calculateSum() {
+    countCart();
+    if (cart.isEmpty) {
+      return 0;
+    } else {
+      num total = 0;
+      for (var element in cart) {
+        total = total + element['price'] * element['qty'];
+      }
+      return total;
+    }
+  }
+
+  void removeCart(int index) {
+    cart.removeAt(index);
+    calculateSum();
+  }
+
+  int countCart() {
+    if (cart.isEmpty) {
+      return 0;
+    } else {
+      return cart.length;
+    }
+  }
 }

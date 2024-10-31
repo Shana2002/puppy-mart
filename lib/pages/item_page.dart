@@ -243,7 +243,7 @@ class _ItemPageState extends State<ItemPage> {
             width: _deviceWidth! * 0.43,
             child: TextButton(
               onPressed: () {
-                _cart!.addTocart(widget.product['productId'].toString(), 1);
+                _cart!.addTocart(widget.product['productId'].toString(), 1,widget.product['price']);
               },
               style: TextButton.styleFrom(
                 foregroundColor: const Color.fromARGB(255, 255, 255, 255),

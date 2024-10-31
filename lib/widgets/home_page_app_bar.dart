@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:puppymart/class/cart_class.dart';
 import 'package:puppymart/services/firebase_service.dart';
 import 'package:puppymart/utilities/CustomColors.dart';
 import 'package:puppymart/utilities/capitalize_text.dart';
@@ -15,11 +16,16 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
   double? _deviceHeight, _deviceWidth;
 
   FirebaseService? _firebaseService;
+  CartClass? _cartClass;
 
   @override
   void initState() {
     super.initState();
     _firebaseService = GetIt.instance.get<FirebaseService>();
+    _cartClass = GetIt.instance.get<CartClass>();
+    setState(() {
+      
+    });
   }
 
   @override
@@ -45,7 +51,9 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                     fontSize: 14),
               ),
               Text(
-                CapitalizeText(text: _firebaseService!.currentUser!["name"].toString()).capitalize(),
+                CapitalizeText(
+                        text: _firebaseService!.currentUser!["name"].toString())
+                    .capitalize(),
                 style: TextStyle(
                     color: Customcolors().primary,
                     fontWeight: FontWeight.bold,
@@ -59,18 +67,47 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                   onTap: () {
                     Navigator.pushNamed(context, 'cart');
                   },
-                  child: Icon(
-                    Icons.shopping_cart,
-                    size: 30,
-                    color: Customcolors().accent,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Icon(
+                        Icons.shopping_cart,
+                        size: 30,
+                        color: Customcolors().accent,
+                      ),
+                      Positioned(
+                        child: Container(
+                            width: 20,
+                            height: 20,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(100)),
+                            child: Text(
+                              _cartClass!.cart.length.toString(),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700),
+                            )),
+                        right: -7,
+                        top: -5,
+                      ),
+                    ],
                   )),
               SizedBox(
                 width: 10,
               ),
-              Icon(
-                Icons.notifications,
-                size: 30,
-                color: Customcolors().accent,
+              GestureDetector(
+                onTap: (){
+                  setState(() {
+                    
+                  });
+                },
+                child: Icon(
+                  Icons.notifications,
+                  size: 30,
+                  color: Customcolors().accent,
+                ),
               )
             ],
           )
