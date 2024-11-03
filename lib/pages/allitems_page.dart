@@ -7,6 +7,7 @@ import 'package:puppymart/class/favourite_class.dart';
 import 'package:puppymart/pages/item_page.dart';
 import 'package:puppymart/services/firebase_service.dart';
 import 'package:puppymart/utilities/CustomColors.dart';
+import 'package:puppymart/widgets/favourite_icon.dart';
 import 'package:puppymart/widgets/home_page_app_bar.dart';
 
 class AllitemsPage extends StatefulWidget {
@@ -229,26 +230,7 @@ class _AllitemsPageState extends State<AllitemsPage> {
                               ),
                             ],
                           ),
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: GestureDetector(
-                              onTap: () {
-                                FavouriteClass().addFavourite(_product['productId']);
-                              },
-                              child: Container(
-                                  margin: EdgeInsets.only(right: 10, top: 10),
-                                  padding: EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                      color: Customcolors().secondory,
-                                      borderRadius: BorderRadius.circular(100)),
-                                  child: Icon(
-                                    Icons.favorite,
-                                    size: 20,
-                                    color:
-                                        const Color.fromARGB(186, 90, 92, 90),
-                                  )),
-                            ),
-                          )
+                          FavouriteIcon(productId:_product['productId'] )
                         ]),
                       ),
                     );

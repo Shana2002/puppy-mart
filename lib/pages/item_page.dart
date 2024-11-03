@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:puppymart/class/cart_class.dart';
+import 'package:puppymart/class/review_class.dart';
 import 'package:puppymart/providers/cart_provider.dart';
 import 'package:puppymart/widgets/home_page_app_bar.dart';
 
@@ -16,6 +17,7 @@ class _ItemPageState extends State<ItemPage> {
   double? _deviceHeight, _deviceWidth;
   CartClass? _cart;
   CartProvider? _cartProvider;
+  final GlobalKey<FormState> _addReviewFormKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -96,9 +98,24 @@ class _ItemPageState extends State<ItemPage> {
             const SizedBox(
               height: 20,
             ),
-            _addReview(),
+            _addreviewform()
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _addreviewform() {
+    return Form(
+      key: _addReviewFormKey,
+      child: Column(
+        children: [
+          _addReview(),
+          const SizedBox(
+            height: 10,
+          ),
+          _addReviewButton()
+        ],
       ),
     );
   }
@@ -271,18 +288,18 @@ class _ItemPageState extends State<ItemPage> {
     return ListView(
       shrinkWrap: true, // allows ListView to size based on its content
       physics: NeverScrollableScrollPhysics(),
-      children: [
-        const ListTile(
+      children: const [
+        ListTile(
           leading: Icon(Icons.person),
           title: Text("Channa"),
           subtitle: Text("hi"),
         ),
-        const ListTile(
+        ListTile(
           leading: Icon(Icons.person),
           title: Text("Channa"),
           subtitle: Text("hi"),
         ),
-        const ListTile(
+        ListTile(
           leading: Icon(Icons.person),
           title: Text("Channa"),
           subtitle: Text("hi"),
@@ -296,7 +313,7 @@ class _ItemPageState extends State<ItemPage> {
       child: SizedBox(
         width: _deviceWidth! * 0.80,
         child: TextFormField(
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.black),
           cursorColor: Colors.white,
           decoration: const InputDecoration(
               hintText: "Add Review",
@@ -307,5 +324,32 @@ class _ItemPageState extends State<ItemPage> {
         ),
       ),
     );
+  }
+
+  Widget _addReviewButton() {
+    return SizedBox(
+      width: _deviceWidth! * 0.43,
+      child: TextButton(
+        onPressed: () {
+          addReview();
+        },
+        style: TextButton.styleFrom(
+          foregroundColor: const Color.fromARGB(255, 255, 255, 255),
+          backgroundColor: const Color.fromARGB(255, 86, 83, 255),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        child: const Text(
+          'Add Review',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+        ),
+      ),
+    );
+  }
+
+  void addReview() async {
+    ReviewClass().addReview(
+        widget.product['productId'].toString(), "Hello nice product", 4);
   }
 }
