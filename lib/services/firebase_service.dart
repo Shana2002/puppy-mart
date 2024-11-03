@@ -13,9 +13,16 @@ class FirebaseService {
   FirebaseStorage _cloud = FirebaseStorage.instance;
   FirebaseFirestore _db = FirebaseFirestore.instance;
 
+  // default image for user first time loging
   final String _defultUserImage =
       "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI=";
   Map? currentUser;
+  get db {
+    return _db;
+  }
+  get auth {
+    return _auth;
+  }
 
   FirebaseService();
 

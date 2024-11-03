@@ -310,9 +310,10 @@ class _LoginpageState extends State<Loginpage> {
         if (_firebaseService!.userName() == 'admin@puppymart.com') {
           Navigator.popAndPushNamed(context, 'adminpage');
         } else {
+          GetIt.instance.registerSingleton<CartProvider>(CartProvider());
           GetIt.instance.registerSingleton<CartClass>(
               CartClass(cusID: _firebaseService!.userName().toString()));
-          GetIt.instance.registerSingleton<CartProvider>(CartProvider());
+          
           Navigator.popAndPushNamed(context, 'homepage');
         }
       } else {

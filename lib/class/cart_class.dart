@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:puppymart/providers/cart_provider.dart';
 import 'package:puppymart/services/firebase_service.dart';
 
 class CartClass {
@@ -8,8 +9,10 @@ class CartClass {
   String? qty;
   List cart = [];
   FirebaseService? _firebaseService;
+  CartProvider? _cartProvider;
   CartClass({required this.cusID}) {
     _firebaseService = GetIt.instance.get<FirebaseService>();
+    _cartProvider = GetIt.instance.get<CartProvider>();
   }
 
   void addTocart(String id, int qty, int price) {
@@ -30,6 +33,7 @@ class CartClass {
       cart.add(_cart);
     }
     calculateSum();
+    _cartProvider!.updateCount();
   }
 
   void minesCart(String id) {
@@ -47,7 +51,9 @@ class CartClass {
     isRemove
         ? removeCart(_index)
         : cart[_index]['qty'] = cart[_index]['qty'] - 1;
+    print(cart.length);
     calculateSum();
+    _cartProvider!.updateCount();
   }
 
   num calculateSum() {
@@ -65,7 +71,11 @@ class CartClass {
 
   void removeCart(int index) {
     cart.removeAt(index);
+    if (cart.isEmpty) {
+      cart.clear();
+    }
     calculateSum();
+    _cartProvider!.updateCount();
   }
 
   int countCart() {
@@ -74,5 +84,10 @@ class CartClass {
     } else {
       return cart.length;
     }
+  }
+
+  void clearCart() {
+    cart.clear();
+    _cartProvider!.updateCount();
   }
 }

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:puppymart/class/cart_class.dart';
+import 'package:puppymart/class/order_class.dart';
 import 'package:puppymart/pages/item_page.dart';
 import 'package:puppymart/services/firebase_service.dart';
 
@@ -121,10 +122,7 @@ class _CartState extends State<Cart> {
             width: _deviceWidth! * 0.9,
             child: TextButton(
               onPressed: () {
-                // Navigator.push(context,
-                //     MaterialPageRoute(builder: (BuildContext _context) {
-                //   return const ItemPage();
-                // }));
+                _conformOrder();
               },
               style: TextButton.styleFrom(
                 foregroundColor: const Color.fromARGB(255, 255, 255, 255),
@@ -288,5 +286,16 @@ class _CartState extends State<Cart> {
             );
           }
         });
+  }
+
+  void _conformOrder() async {
+    if (_cartClass!.cart.isNotEmpty) {
+      bool isAdd = await OrderClass().addToOrder();
+      if (isAdd) {
+        setState(() {});
+      }
+    } else {
+      print("error");
+    }
   }
 }
