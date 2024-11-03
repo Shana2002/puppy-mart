@@ -20,6 +20,7 @@ class FirebaseService {
   get db {
     return _db;
   }
+
   get auth {
     return _auth;
   }
@@ -162,4 +163,6 @@ class FirebaseService {
         await _db.collection(PRODUCT_COLLECTION).doc(_productId).get();
     return query.data() as Map<String, dynamic>;
   }
+
+  
 }

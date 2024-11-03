@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:puppymart/class/favourite_class.dart';
 import 'package:puppymart/pages/item_page.dart';
 import 'package:puppymart/services/firebase_service.dart';
 import 'package:puppymart/utilities/CustomColors.dart';
@@ -77,7 +78,6 @@ class _AllitemsPageState extends State<AllitemsPage> {
 
   Widget _itemContainer(BuildContext context) {
     return GestureDetector(
-      
       child: Column(
         children: [
           ConstrainedBox(
@@ -166,67 +166,90 @@ class _AllitemsPageState extends State<AllitemsPage> {
                       },
                       child: Container(
                         color: Colors.white,
-                        child: Column(
-                          children: [
-                            ConstrainedBox(
-                              constraints: const BoxConstraints(
-                                  minWidth: 150,
-                                  maxHeight: 150,
-                                  minHeight: 150,
-                                  maxWidth: 150),
+                        child: Stack(children: [
+                          Column(
+                            children: [
+                              ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                    minWidth: 150,
+                                    maxHeight: 150,
+                                    minHeight: 150,
+                                    maxWidth: 150),
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                                _product['image'])))),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                _product['name'],
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w800),
+                              ),
+                              const Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.star,
+                                        size: 13,
+                                        color: Colors.yellow,
+                                      ),
+                                      Icon(
+                                        Icons.star,
+                                        size: 13,
+                                        color: Colors.yellow,
+                                      ),
+                                      Icon(
+                                        Icons.star,
+                                        size: 13,
+                                        color: Colors.yellow,
+                                      ),
+                                      Icon(
+                                        Icons.star,
+                                        size: 13,
+                                        color: Colors.yellow,
+                                      ),
+                                      Icon(
+                                        Icons.star,
+                                        size: 13,
+                                        color: Colors.black,
+                                      ),
+                                    ],
+                                  ),
+                                  Text("1500")
+                                ],
+                              ),
+                            ],
+                          ),
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: GestureDetector(
+                              onTap: () {
+                                FavouriteClass().addFavourite(_product['productId']);
+                              },
                               child: Container(
+                                  margin: EdgeInsets.only(right: 10, top: 10),
+                                  padding: EdgeInsets.all(5),
                                   decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image:
-                                              NetworkImage(_product['image'])))),
+                                      color: Customcolors().secondory,
+                                      borderRadius: BorderRadius.circular(100)),
+                                  child: Icon(
+                                    Icons.favorite,
+                                    size: 20,
+                                    color:
+                                        const Color.fromARGB(186, 90, 92, 90),
+                                  )),
                             ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              _product['name'],
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w800),
-                            ),
-                            const Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.star,
-                                      size: 13,
-                                      color: Colors.yellow,
-                                    ),
-                                    Icon(
-                                      Icons.star,
-                                      size: 13,
-                                      color: Colors.yellow,
-                                    ),
-                                    Icon(
-                                      Icons.star,
-                                      size: 13,
-                                      color: Colors.yellow,
-                                    ),
-                                    Icon(
-                                      Icons.star,
-                                      size: 13,
-                                      color: Colors.yellow,
-                                    ),
-                                    Icon(
-                                      Icons.star,
-                                      size: 13,
-                                      color: Colors.black,
-                                    ),
-                                  ],
-                                ),
-                                Text("1500")
-                              ],
-                            ),
-                          ],
-                        ),
+                          )
+                        ]),
                       ),
                     );
                   });

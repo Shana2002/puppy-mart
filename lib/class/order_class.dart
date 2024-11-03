@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:puppymart/class/cart_class.dart';
 import 'package:puppymart/services/firebase_service.dart';
@@ -8,6 +9,7 @@ final String ORDER_COLLECTION = 'order';
 class OrderClass extends FirebaseService {
   String? customer;
   CartClass? _cartClass;
+  String status = "pending";
   OrderClass() {
     _cartClass = GetIt.instance.get<CartClass>();
   }
@@ -17,9 +19,10 @@ class OrderClass extends FirebaseService {
       customer = auth.currentUser!.uid;
       await db.collection(ORDER_COLLECTION).add({
         "customer": customer,
-        "timestamp": Timestamp.now(),
+        "dateTime": DateTime.now(),
         "orderlist": _cartClass!.cart,
         "subtotal": _cartClass!.calculateSum(),
+        "status" : status,
       });
       _cartClass!.clearCart();
       return true;
@@ -27,5 +30,12 @@ class OrderClass extends FirebaseService {
       print(e);
       return false;
     }
+  }
+
+  Stream<QuerySnapshot> recentOrders() {
+    return db
+        .collection('order')
+        .where("customer", isEqualTo: auth.currentUser!.uid)
+        .snapshots();
   }
 }
