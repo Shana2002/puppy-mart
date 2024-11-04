@@ -17,12 +17,15 @@ class OrderClass extends FirebaseService {
   Future<bool> addToOrder() async {
     try {
       customer = auth.currentUser!.uid;
-      await db.collection(ORDER_COLLECTION).add({
+      String _orderId =
+          Timestamp.now().microsecondsSinceEpoch.toString() + customer!;
+      await db.collection(ORDER_COLLECTION).doc(_orderId).set({
+        "orderId": _orderId,
         "customer": customer,
         "dateTime": DateTime.now(),
         "orderlist": _cartClass!.cart,
         "subtotal": _cartClass!.calculateSum(),
-        "status" : status,
+        "status": status,
       });
       _cartClass!.clearCart();
       return true;
@@ -37,5 +40,9 @@ class OrderClass extends FirebaseService {
         .collection('order')
         .where("customer", isEqualTo: auth.currentUser!.uid)
         .snapshots();
+  }
+
+  Stream<QuerySnapshot> allOrders() {
+    return db.collection('order').snapshots();
   }
 }

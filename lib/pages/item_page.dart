@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:puppymart/class/cart_class.dart';
 import 'package:puppymart/class/review_class.dart';
+import 'package:puppymart/class/user_class.dart';
 import 'package:puppymart/providers/cart_provider.dart';
 import 'package:puppymart/widgets/home_page_app_bar.dart';
 
@@ -94,7 +95,7 @@ class _ItemPageState extends State<ItemPage> {
               height: 20,
             ),
             _reviews(),
-            _reviewCard(),
+            _reviewsCard(),
             const SizedBox(
               height: 20,
             ),
@@ -284,6 +285,55 @@ class _ItemPageState extends State<ItemPage> {
     );
   }
 
+  Widget _reviewsCard() {
+    return FutureBuilder(
+      future: ReviewClass().reviewsList(widget.product['productId']),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          List reviewsList = snapshot.data;
+          return Container(
+              width: _deviceWidth! * 0.8,
+              height: _deviceHeight! * 0.3,
+              child: ListView.builder(
+                  itemCount: reviewsList.length > 2 ? 2 : reviewsList.length,
+                  itemBuilder: (context, _index) {
+                    Map reviewList = reviewsList[_index];
+                    return Container(
+                      child: ListTile(
+                        leading: Icon(Icons.person),
+                        title: FutureBuilder(
+                            future: UserClass()
+                                .getUserName(reviewList['reviewer'].toString()),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                Map userDetails = snapshot.data!;
+                                return Text(userDetails['name']);
+                              } else {
+                                return Text("No user found");
+                              }
+                            }),
+                        subtitle: Text(reviewList['review'].toString()),
+                      ),
+                    );
+                  }));
+          // List reviewsList = snapshot.data;
+          // return ListView.builder(
+          //     itemCount: reviewsList.length,
+          //     itemBuilder: (context, index) {
+          //       Map reviewList = reviewsList[index];
+          //       return ListTile(
+          //         leading: Icon(Icons.person),
+          //         title: Text(),
+          //         subtitle: Text(reviewList['review'].toString()),
+          //       );
+          //     });
+        } else {
+          return Text("data1");
+        }
+      },
+    );
+  }
+
   Widget _reviewCard() {
     return ListView(
       shrinkWrap: true, // allows ListView to size based on its content
@@ -349,7 +399,7 @@ class _ItemPageState extends State<ItemPage> {
   }
 
   void addReview() async {
-    ReviewClass().addReview(
-        widget.product['productId'].toString(), "Hello nice product", 4);
+    ReviewClass().addReview(widget.product['productId'].toString(),
+        "Hello nice prodedsfsfuct nice item0", 3);
   }
 }

@@ -4,9 +4,7 @@ import 'package:puppymart/services/firebase_service.dart';
 String REVIEW_COLLECTION = 'review';
 
 class ReviewClass extends FirebaseService {
-  
-  Future<bool> addReview(
-      String proId, String review, num rating) async {
+  Future<bool> addReview(String proId, String review, num rating) async {
     try {
       List _reviewList = await reviewsList(proId);
       Map reviewMap = {
@@ -15,10 +13,12 @@ class ReviewClass extends FirebaseService {
         "rating": rating,
         "timestamp": Timestamp.now()
       };
+      print(reviewMap);
       _reviewList.add(reviewMap);
-
-      await db.collection('reviews').doc(proId).set({
-        'reviews' : _reviewList, 
+      print(_reviewList);
+      await db.collection(REVIEW_COLLECTION).doc(proId).set({
+        'reviews': _reviewList,
+        'total': 4,
       });
       return true;
     } catch (e) {
@@ -30,6 +30,9 @@ class ReviewClass extends FirebaseService {
   Future<List> reviewsList(String _proId) async {
     DocumentSnapshot query =
         await db.collection(REVIEW_COLLECTION).doc(_proId).get();
+    if (query.data() == null) {
+      return [];
+    }
     Map favourite = query.data() as Map<String, dynamic>;
     return favourite['reviews'];
   }

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:puppymart/pages/item_page.dart';
 import 'package:puppymart/services/firebase_service.dart';
 import 'package:puppymart/utilities/capitalize_text.dart';
 import 'package:puppymart/widgets/home_page_app_bar.dart';
@@ -103,38 +104,46 @@ class _ExplorePageState extends State<ExplorePage> {
                 itemCount: _products.length,
                 itemBuilder: (context, index) {
                   Map _product = _products[index];
-                  return Container(
-                    margin: EdgeInsets.symmetric(horizontal: _deviceWidth!*0.05),
-                    width: 160,
-                    child: Column(children: [
-                      Container(
-                        width: 160,
-                        height: 150,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(_product['image'])),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(context,
+                            MaterialPageRoute(builder: (BuildContext _context) {
+                          return ItemPage(product: _product);
+                        }));
+                    },
+                    child: Container(
+                      margin: EdgeInsets.symmetric(horizontal: _deviceWidth!*0.05),
+                      width: 160,
+                      child: Column(children: [
+                        Container(
+                          width: 160,
+                          height: 150,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(_product['image'])),
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        CapitalizeText(text: _product['name']).capitalize(),
-                        overflow: TextOverflow.fade,
-                        maxLines: 1,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w800),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const RatingStar(size: 13),
-                          Text(_product['price'].toString())
-                        ],
-                      )
-                    ]),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          CapitalizeText(text: _product['name']).capitalize(),
+                          overflow: TextOverflow.fade,
+                          maxLines: 1,
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w800),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const RatingStar(size: 13),
+                            Text(_product['price'].toString())
+                          ],
+                        )
+                      ]),
+                    ),
                   );
                 });
           } else {
