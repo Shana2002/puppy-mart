@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:puppymart/class/user_class.dart';
+import 'package:puppymart/services/firebase_service.dart';
 import 'package:puppymart/utilities/CustomColors.dart';
 
 class OrderView extends StatefulWidget {
@@ -12,6 +14,14 @@ class OrderView extends StatefulWidget {
 
 class _OrderViewState extends State<OrderView> {
   double? _deviceHeight, _deviceWidth;
+  FirebaseService? _firebaseService;
+
+  @override
+  void initState() {
+    super.initState();
+    _firebaseService = GetIt.instance.get<FirebaseService>();
+  }
+
   @override
   Widget build(BuildContext context) {
     _deviceWidth = MediaQuery.of(context).size.width;
@@ -57,7 +67,7 @@ class _OrderViewState extends State<OrderView> {
                   ],
                 ),
                 SizedBox(
-                  height: 10,
+                  height: _deviceHeight! * 0.005,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -70,14 +80,16 @@ class _OrderViewState extends State<OrderView> {
                     Container(
                         width: _deviceWidth! * 0.6,
                         child: Text(
-                          userDetails['name'],
+                          "hansaka \n ravishan\n 22 \n dsffds",
                           style: _orderText(),
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.right,
                         )),
                   ],
                 ),
                 SizedBox(
-                  height: 10,
+                  height: _deviceHeight! * 0.005,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -95,7 +107,12 @@ class _OrderViewState extends State<OrderView> {
                           textAlign: TextAlign.right,
                         )),
                   ],
-                )
+                ),
+                SizedBox(
+                  height: _deviceHeight! * 0.02,
+                ),
+                _orderItemList(),
+                _bottomContainer(),
               ],
             );
           } else {
@@ -104,9 +121,74 @@ class _OrderViewState extends State<OrderView> {
         });
   }
 
+  Widget _orderItemList() {
+    List _items = widget.order['orderlist'];
+    return Container(
+      width: _deviceWidth! * 0.9,
+      height: _deviceHeight! * 0.6,
+      child: ListView.builder(
+          itemCount: _items.length,
+          itemBuilder: (context, _index) {
+            Map _itemdetails = _items[_index];
+            return Container(
+              margin: EdgeInsets.symmetric(vertical: _deviceHeight! * 0.005),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Customcolors().secondory,
+              ),
+              child: ListTile(
+                title: FutureBuilder(
+                    future: _firebaseService!
+                        .getProductDetails(_itemdetails['id'].toString()),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        Map _productDetail = snapshot.data!;
+                        return Text(_productDetail['name']);
+                      } else {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                    }),
+                trailing: Text(_itemdetails['qty'].toString()),
+              ),
+            );
+          }),
+    );
+  }
+
+  Widget _bottomContainer() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Container(
+            width: _deviceWidth! * 0.43,
+            child: Center(
+                child: Text("LKR 1750",
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 19)))),
+        SizedBox(
+          width: _deviceWidth! * 0.43,
+          child: TextButton(
+            onPressed: () {},
+            style: TextButton.styleFrom(
+              foregroundColor: const Color.fromARGB(255, 255, 255, 255),
+              backgroundColor: Customcolors().accent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: const Text(
+              'Ready Package',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
   TextStyle _orderText() {
     return TextStyle(
-        color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500);
+        color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500);
   }
 }

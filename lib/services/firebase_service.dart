@@ -93,6 +93,25 @@ class FirebaseService {
       return false;
     }
   }
+  Future<bool> uploadProfile(String _userName , String _address1,String _address2,String _city,String _mobile) async {
+    try {
+      String _userId = _auth.currentUser!.uid;
+      await _db.collection(USER_COLLECTION).doc(_userId).set({
+          "name": _userName,
+          "email": currentUser!["email"],
+          "image": currentUser!["image"],
+          "address1" : _address1,
+          "address2" : _address2,
+          "city" : _city,
+          "mobile" : _mobile,
+        });
+      currentUser = await getUserData(uid: _userId);
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
 
   Future<bool> addProduct(
       {required String name,

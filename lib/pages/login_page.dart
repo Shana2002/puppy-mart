@@ -307,13 +307,29 @@ class _LoginpageState extends State<Loginpage> {
       bool _result = await _firebaseService!
           .loginUser(email: _varEmailLogin!, password: _varPasswordLogin!);
       if (_result) {
-        if (_firebaseService!.userName() == 'admin@puppymart.com') {
+        final userName = _firebaseService!.userName();
+
+        if (userName == 'admin@puppymart.com') {
           Navigator.popAndPushNamed(context, 'adminpage');
+
+          if (!GetIt.instance.isRegistered<CartProvider>()) {
+            GetIt.instance.registerSingleton<CartProvider>(CartProvider());
+          }
+
+          if (!GetIt.instance.isRegistered<CartClass>()) {
+            GetIt.instance.registerSingleton<CartClass>(
+                CartClass(cusID: userName.toString()));
+          }
         } else {
-          GetIt.instance.registerSingleton<CartProvider>(CartProvider());
-          GetIt.instance.registerSingleton<CartClass>(
-              CartClass(cusID: _firebaseService!.userName().toString()));
-          
+          if (!GetIt.instance.isRegistered<CartProvider>()) {
+            GetIt.instance.registerSingleton<CartProvider>(CartProvider());
+          }
+
+          if (!GetIt.instance.isRegistered<CartClass>()) {
+            GetIt.instance.registerSingleton<CartClass>(
+                CartClass(cusID: userName.toString()));
+          }
+
           Navigator.popAndPushNamed(context, 'homepage');
         }
       } else {
@@ -338,4 +354,6 @@ class _LoginpageState extends State<Loginpage> {
       }
     }
   }
+
+  void _create() {}
 }

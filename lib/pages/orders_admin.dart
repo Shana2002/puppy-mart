@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:puppymart/class/order_class.dart';
+import 'package:puppymart/class/user_class.dart';
 import 'package:puppymart/pages/order_view.dart';
 import 'package:puppymart/services/firebase_service.dart';
 import 'package:puppymart/utilities/CustomColors.dart';
@@ -58,49 +59,65 @@ class _OrdersAdminState extends State<OrdersAdmin> {
     String _dateformat =
         "${_datetime.year}-${_datetime.month}-${_datetime.day} ${_datetime.hour}:${_datetime.minute}";
     print(_datetime);
-    return Container(
-      margin: EdgeInsets.symmetric(
-          horizontal: _deviceWidth! * 0.03, vertical: _deviceHeight! * 0.005),
-      padding: EdgeInsets.symmetric(
-          horizontal: _deviceWidth! * 0.02, vertical: _deviceHeight! * 0.02),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.15),
-              spreadRadius: 0,
-              blurRadius: 20, // Increased blur radius
-              offset: Offset(0, 4),
-            )
-          ]),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            children: [
-              Text(
-                _dateformat,
-                style: TextStyle(color: Customcolors().primary),
-              ),
-              Text(
-                "Total : LKR  ${_order['subtotal']}",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    return GestureDetector(
+      onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (BuildContext _context) {
+                      return OrderView(order: _order);
+                    }));
+                  },
+      child: Container(
+        margin: EdgeInsets.symmetric(
+            horizontal: _deviceWidth! * 0.03, vertical: _deviceHeight! * 0.005),
+        padding: EdgeInsets.symmetric(
+            horizontal: _deviceWidth! * 0.02, vertical: _deviceHeight! * 0.02),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.15),
+                spreadRadius: 0,
+                blurRadius: 20, // Increased blur radius
+                offset: Offset(0, 4),
               )
-            ],
-          ),
-          GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (BuildContext _context) {
-                  return OrderView(order: _order);
-                }));
-              },
-              child: Icon(
-                Icons.arrow_right_alt,
-                size: 25,
-              ))
-        ],
+            ]),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              children: [
+                FutureBuilder(
+                    future: UserClass().getUserName(_order['customer']),
+                    builder: (context, _snapshot) {
+                      if (_snapshot.hasData) {
+                        Map _userDetails = _snapshot.data!;
+                        return Text(_userDetails['name'],style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold));
+                      } else {
+                        return Text("Loading....");
+                      }
+                    }),
+                Text(
+                  _dateformat,
+                  style: TextStyle(color: Customcolors().primary),
+                ),
+                Text(
+                  "Total : LKR  ${_order['subtotal']}",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                )
+              ],
+            ),
+            Column(
+              children: [
+                Text(_order['status'],style: TextStyle(color: _order['status']=='pending'? Colors.red : Colors.green),),
+                Icon(
+                  Icons.arrow_right_alt,
+                  size: 25,
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

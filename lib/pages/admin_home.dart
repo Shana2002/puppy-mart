@@ -120,14 +120,14 @@ class _AdminHomeState extends State<AdminHome> {
         },
         backgroundColor: Customcolors().primary,
         elevation: 5,
-        currentIndex: 0,
+        currentIndex: _currntPage,
         iconSize: 25,
         fixedColor: Colors.white,
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(label: "Products", icon: Icon(Icons.shop)),
           BottomNavigationBarItem(
-              label: "Cart", icon: Icon(Icons.shopping_cart)),
+              label: "Orders", icon: Icon(Icons.shopping_cart)),
         ]);
   }
 }

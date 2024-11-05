@@ -30,6 +30,16 @@ class DecorationClass {
             OutlineInputBorder(borderSide: BorderSide(color: Colors.white)));
   }
 
+  static InputDecoration userInputsUpdate(double _width, String _hint, String _name) {
+    return InputDecoration(
+        label: Text(_name),
+        hintText: _hint,
+        border: OutlineInputBorder(
+            borderSide: BorderSide(color: Customcolors().secondory)),
+        focusedBorder:
+            OutlineInputBorder(borderSide: BorderSide(color: Customcolors().primary)));
+  }
+
   static IconData _getIconByString(String iconName) {
     switch (iconName) {
       case 'email':

@@ -5,6 +5,7 @@ import 'package:puppymart/class/cart_class.dart';
 import 'package:puppymart/class/order_class.dart';
 import 'package:puppymart/pages/item_page.dart';
 import 'package:puppymart/services/firebase_service.dart';
+import 'package:puppymart/utilities/CustomColors.dart';
 
 class Cart extends StatefulWidget {
   const Cart({super.key});
@@ -290,12 +291,46 @@ class _CartState extends State<Cart> {
 
   void _conformOrder() async {
     if (_cartClass!.cart.isNotEmpty) {
-      bool isAdd = await OrderClass().addToOrder();
-      if (isAdd) {
-        setState(() {});
+      if (_verifyAddress()) {
+        bool isAdd = await OrderClass().addToOrder();
+        if (isAdd) {
+          _showOrderConfirmationDialog(context);
+          // Wait for 3 seconds before popping the screen
+          await Future.delayed(Duration(seconds: 2));
+          Navigator.pop(context);
+          Navigator.pop(context);
+        }
+      } else {
+        Navigator.pushNamed(context, 'updateprofile');
       }
     } else {
       print("error");
     }
+  }
+
+  bool _verifyAddress() {
+    final currentUser = _firebaseService?.currentUser;
+
+    if (currentUser != null &&
+        currentUser['address1']?.toString().isNotEmpty == true &&
+        currentUser['address2']?.toString().isNotEmpty == true &&
+        currentUser['city']?.toString().isNotEmpty == true &&
+        currentUser['mobile']?.toString().isNotEmpty == true) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void _showOrderConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          icon: Icon(Icons.done),
+          content: Center(child: Text('Order added successfully!',style: TextStyle(color: Customcolors().accent,fontWeight: FontWeight.bold),)),
+        );
+      },
+    );
   }
 }

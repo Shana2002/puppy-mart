@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:puppymart/class/cart_class.dart';
 import 'package:puppymart/utilities/capitalize_text.dart';
 import 'package:puppymart/services/firebase_service.dart';
 import 'package:puppymart/utilities/decoration_class.dart';
@@ -16,13 +17,14 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   double? _deviceHeight, _deviceWidth;
-
+  CartClass? _cartClass;
   FirebaseService? _firebaseService;
 
   @override
   void initState() {
     super.initState();
     _firebaseService = GetIt.instance.get<FirebaseService>();
+    _cartClass = GetIt.instance.get<CartClass>();
   }
 
   @override
@@ -167,6 +169,7 @@ class _ProfilePageState extends State<ProfilePage> {
       width: _deviceWidth! * 0.9,
       child: TextButton(
         onPressed: () {
+          _cartClass!.clearCart();
           Navigator.popAndPushNamed(context, 'landing');
         },
         style: TextButton.styleFrom(
@@ -190,13 +193,9 @@ class _ProfilePageState extends State<ProfilePage> {
     File _image = File(_result!.files.first.path!);
     if (_result != null) {
       bool _upload = await _firebaseService!.uploadProfilePic(_image);
-      if(_upload){
-        setState(() {
-          
-        });
+      if (_upload) {
+        setState(() {});
       }
     }
-
-
   }
 }
