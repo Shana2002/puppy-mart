@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:puppymart/class/cart_class.dart';
@@ -5,6 +6,7 @@ import 'package:puppymart/class/review_class.dart';
 import 'package:puppymart/class/user_class.dart';
 import 'package:puppymart/providers/cart_provider.dart';
 import 'package:puppymart/widgets/home_page_app_bar.dart';
+import 'package:five_pointed_star/five_pointed_star.dart';
 
 class ItemPage extends StatefulWidget {
   final Map product;
@@ -19,6 +21,9 @@ class _ItemPageState extends State<ItemPage> {
   CartClass? _cart;
   CartProvider? _cartProvider;
   final GlobalKey<FormState> _addReviewFormKey = GlobalKey<FormState>();
+  bool rateStart = false;
+  int ratingCount = 4;
+  String? rateString;
 
   @override
   void initState() {
@@ -94,6 +99,10 @@ class _ItemPageState extends State<ItemPage> {
             const SizedBox(
               height: 20,
             ),
+            Text(
+              "Reviews",
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
+            ),
             _reviews(),
             _reviewsCard(),
             const SizedBox(
@@ -110,7 +119,11 @@ class _ItemPageState extends State<ItemPage> {
     return Form(
       key: _addReviewFormKey,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          _ratingStar(),
           _addReview(),
           const SizedBox(
             height: 10,
@@ -145,6 +158,24 @@ class _ItemPageState extends State<ItemPage> {
     );
   }
 
+  Widget _ratingStar() {
+    return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: _deviceWidth! * 0.27, vertical: _deviceHeight! * 0.01),
+      child: Center(
+        child: FivePointedStar(
+          count: 5,
+          gap: 4,
+          defaultSelectedCount: 4,
+          selectedColor: Colors.yellow,
+          onChange: (_count) {
+            ratingCount = _count;
+          },
+        ),
+      ),
+    );
+  }
+
   Widget _priceConatianer() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -154,35 +185,7 @@ class _ItemPageState extends State<ItemPage> {
           "LKR ${widget.product['price']}",
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        const Row(
-          children: [
-            Icon(
-              Icons.star,
-              size: 25,
-              color: Colors.yellow,
-            ),
-            Icon(
-              Icons.star,
-              size: 25,
-              color: Colors.yellow,
-            ),
-            Icon(
-              Icons.star,
-              size: 25,
-              color: Colors.yellow,
-            ),
-            Icon(
-              Icons.star,
-              size: 25,
-              color: Colors.yellow,
-            ),
-            Icon(
-              Icons.star,
-              size: 25,
-              color: Colors.black,
-            ),
-          ],
-        ),
+        _reviews()
       ],
     );
   }
@@ -192,48 +195,25 @@ class _ItemPageState extends State<ItemPage> {
   }
 
   Widget _reviews() {
-    return const Column(
-      children: [
-        Text(
-          "Reviews",
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.star,
-              size: 25,
-              color: Colors.yellow,
-            ),
-            Icon(
-              Icons.star,
-              size: 25,
-              color: Colors.yellow,
-            ),
-            Icon(
-              Icons.star,
-              size: 25,
-              color: Colors.yellow,
-            ),
-            Icon(
-              Icons.star,
-              size: 25,
-              color: Colors.yellow,
-            ),
-            Icon(
-              Icons.star,
-              size: 25,
-              color: Colors.black,
-            ),
-          ],
-        ),
-        // _reviewCard()
-      ],
-    );
+    return FutureBuilder(
+        future:
+            ReviewClass().reviewsCount(widget.product['productId'].toString()),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            int currentRate = snapshot.data!;
+            print(currentRate);
+            print('22323242423fg gfdg fgdf ');
+            return FivePointedStar(
+              count: 5,
+              gap: 4,
+              defaultSelectedCount: currentRate,
+              selectedColor: Colors.yellow,
+              disabled: true,
+            );
+          } else {
+            return CircularProgressIndicator();
+          }
+        });
   }
 
   Widget _buttonContainer() {
@@ -334,35 +314,14 @@ class _ItemPageState extends State<ItemPage> {
     );
   }
 
-  Widget _reviewCard() {
-    return ListView(
-      shrinkWrap: true, // allows ListView to size based on its content
-      physics: NeverScrollableScrollPhysics(),
-      children: const [
-        ListTile(
-          leading: Icon(Icons.person),
-          title: Text("Channa"),
-          subtitle: Text("hi"),
-        ),
-        ListTile(
-          leading: Icon(Icons.person),
-          title: Text("Channa"),
-          subtitle: Text("hi"),
-        ),
-        ListTile(
-          leading: Icon(Icons.person),
-          title: Text("Channa"),
-          subtitle: Text("hi"),
-        ),
-      ],
-    );
-  }
-
   Widget _addReview() {
     return Container(
       child: SizedBox(
         width: _deviceWidth! * 0.80,
         child: TextFormField(
+          onChanged: (_value) {
+            rateString = _value;
+          },
           style: TextStyle(color: Colors.black),
           cursorColor: Colors.white,
           decoration: const InputDecoration(
@@ -399,7 +358,10 @@ class _ItemPageState extends State<ItemPage> {
   }
 
   void addReview() async {
-    ReviewClass().addReview(widget.product['productId'].toString(),
-        "Hello nice prodedsfsfuct nice item0", 3);
+    await ReviewClass().addReview(
+        widget.product['productId'].toString(), rateString!, ratingCount);
+    setState(() {
+      rateString = "";
+    });
   }
 }
