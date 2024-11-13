@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:puppymart/pages/add_news.dart';
 import 'package:puppymart/pages/add_product.dart';
 import 'package:puppymart/pages/admin_home.dart';
 import 'package:puppymart/pages/allitems_page.dart';
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
         'updateprofile': (context) => UpdateProfile(),
         'adminpage' : (context) => AdminHome(),
         'add_product' : (context) => AddProduct(),
+        'add_news' : (context) => AddNews(),
        },
     );
   }

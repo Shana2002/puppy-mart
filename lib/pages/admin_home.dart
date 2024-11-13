@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:puppymart/pages/news_admin.dart';
 import 'package:puppymart/pages/orders_admin.dart';
 import 'package:puppymart/pages/products_admin.dart';
 import 'package:puppymart/services/firebase_service.dart';
@@ -21,6 +22,7 @@ class _AdminHomeState extends State<AdminHome> {
   final List<Widget> _pages = [
     ProductsAdmin(),
     OrdersAdmin(),
+    NewsAdmin(),
   ];
   int _currntPage = 0;
 
@@ -36,15 +38,6 @@ class _AdminHomeState extends State<AdminHome> {
     _deviceHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       bottomNavigationBar: _bottomNavigationBar(),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Customcolors().primary,
-        foregroundColor: Customcolors().background,
-        onPressed: () {
-          Navigator.pushNamed(context, 'add_product');
-        },
-        label: const Text("Add Product"),
-        icon: Icon(Icons.add),
-      ),
       body: SafeArea(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: _deviceWidth! * 0.05),
@@ -55,7 +48,7 @@ class _AdminHomeState extends State<AdminHome> {
                 child: _appBar(),
               ),
               Container(
-                height: _deviceHeight! * 0.74,
+                height: _deviceHeight! * 0.82,
                 child: _pages[_currntPage],
               )
             ],
@@ -109,6 +102,7 @@ class _AdminHomeState extends State<AdminHome> {
       ),
     );
   }
+
 // sandali sanara
   Widget _bottomNavigationBar() {
     return BottomNavigationBar(
@@ -128,6 +122,8 @@ class _AdminHomeState extends State<AdminHome> {
           BottomNavigationBarItem(label: "Products", icon: Icon(Icons.shop)),
           BottomNavigationBarItem(
               label: "Orders", icon: Icon(Icons.shopping_cart)),
+          BottomNavigationBarItem(
+              label: "Contents", icon: Icon(Icons.content_copy))
         ]);
   }
 }

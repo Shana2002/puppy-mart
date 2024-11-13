@@ -29,7 +29,11 @@ class _OrderViewState extends State<OrderView> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Customcolors().secondory,
-        leading: Icon(Icons.arrow_back),
+        leading: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(Icons.arrow_back)),
         title: Text(widget.order['orderId']),
       ),
       body: SafeArea(

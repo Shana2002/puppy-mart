@@ -1,20 +1,20 @@
 import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:puppymart/class/news.dart';
 import 'package:puppymart/services/firebase_service.dart';
 import 'package:puppymart/utilities/CustomColors.dart';
 import 'package:puppymart/utilities/decoration_class.dart';
 
-class AddProduct extends StatefulWidget {
-  const AddProduct({super.key});
+class AddNews extends StatefulWidget {
+  const AddNews({super.key});
 
   @override
-  State<AddProduct> createState() => _AddProductState();
+  State<AddNews> createState() => _AddNewsState();
 }
 
-class _AddProductState extends State<AddProduct> {
+class _AddNewsState extends State<AddNews> {
   final GlobalKey<FormState> _addProduct = GlobalKey<FormState>();
   double? _deviceHeight, _deviceWidth;
 
@@ -46,7 +46,7 @@ class _AddProductState extends State<AddProduct> {
               color: Customcolors().accent,
             )),
         title: const Text(
-          "Add Product",
+          "Add Content",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
@@ -76,8 +76,8 @@ class _AddProductState extends State<AddProduct> {
     return GestureDetector(
       onTap: _addProductPhoto,
       child: Container(
-        width: _deviceHeight! * 0.20,
-        height: _deviceHeight! * 0.20,
+        width: _deviceWidth! * 0.80,
+        height: _deviceHeight! * 0.30,
         decoration: BoxDecoration(
           image: _image != null
               ? DecorationImage(image: FileImage(_image!), fit: BoxFit.cover)
@@ -102,27 +102,11 @@ class _AddProductState extends State<AddProduct> {
         key: _addProduct,
         child: Column(
           children: [
-            _inputBox("name", "Product Name"),
+            _inputBox("name", "Title"),
             const SizedBox(
               height: 10,
             ),
             _productDescription(),
-            const SizedBox(
-              height: 10,
-            ),
-            _inputBox("brand", "Product Brand"),
-            const SizedBox(
-              height: 10,
-            ),
-            _inputBox("age", "Enter Age"),
-            const SizedBox(
-              height: 10,
-            ),
-            _inputBox("type", "Product type"),
-            const SizedBox(
-              height: 10,
-            ),
-            _inputBox("price", "Product price"),
             const SizedBox(
               height: 10,
             ),
@@ -136,7 +120,7 @@ class _AddProductState extends State<AddProduct> {
       width: _deviceWidth! * 0.80,
       child: TextFormField(
           keyboardType: TextInputType.multiline,
-          maxLines: 3,
+          maxLines: 8,
           onSaved: (_value) {
             setState(() {
               _description = _value;
@@ -144,7 +128,7 @@ class _AddProductState extends State<AddProduct> {
           },
           style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
           cursorColor: const Color.fromARGB(255, 0, 0, 0),
-          decoration: DecorationClass.inputProduct("Product Description"),
+          decoration: DecorationClass.inputProduct("Description"),
           validator: (_value) =>
               _value!.length > 60 ? null : "Enter more than 60 words"),
     );
@@ -163,18 +147,6 @@ class _AddProductState extends State<AddProduct> {
                 case "name":
                   _name = _value;
                   break;
-                case "brand":
-                  _brand = _value;
-                  break;
-                case "type":
-                  _type = _value;
-                  break;
-                case "age":
-                  _age = num.parse(_value!);
-                  break;
-                case "price":
-                  _price = num.parse(_value!);
-                  break;
                 default:
                   print("error 1");
               }
@@ -188,18 +160,6 @@ class _AddProductState extends State<AddProduct> {
             switch (name) {
               case "name":
                 _value!.length > 6 ? null : error = true;
-                break;
-              case "brand":
-                _value!.length > 6 ? null : error = true;
-                break;
-              case "type":
-                _value!.length > 6 ? null : error = true;
-                break;
-              case "age":
-                _value!.isNotEmpty ? null : error = true;
-                break;
-              case "price":
-                _value!.isNotEmpty ? null : error = true;
                 break;
               default:
             }
@@ -221,7 +181,7 @@ class _AddProductState extends State<AddProduct> {
           validDate();
         },
         child: const Text(
-          "Add Product",
+          "Add Content",
           style: TextStyle(
               color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
         ),
@@ -242,14 +202,8 @@ class _AddProductState extends State<AddProduct> {
   validDate() async {
     if (_addProduct.currentState!.validate() && _image != null) {
       _addProduct.currentState!.save();
-      bool _result = await _firebaseService!.addProduct(
-          name: _name!,
-          desc: _description!,
-          brand: _brand!,
-          type: _type!,
-          age: _age!,
-          price: _price!,
-          image: _image!);
+      bool _result = await News()
+          .addNews(name: _name!, desc: _description!, image: _image!);
       _result ? Navigator.popAndPushNamed(context, "adminpage") : null;
     } else {
       print("object");

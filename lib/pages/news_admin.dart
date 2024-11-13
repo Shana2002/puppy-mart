@@ -1,17 +1,17 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:puppymart/services/firebase_service.dart';
 import 'package:puppymart/utilities/CustomColors.dart';
 
-class ProductsAdmin extends StatefulWidget {
-  const ProductsAdmin({super.key});
+class NewsAdmin extends StatefulWidget {
+  const NewsAdmin({super.key});
 
   @override
-  State<ProductsAdmin> createState() => _ProductsAdminState();
+  State<NewsAdmin> createState() => _NewsAdminState();
 }
 
-class _ProductsAdminState extends State<ProductsAdmin> {
+class _NewsAdminState extends State<NewsAdmin> {
   double? _deviceHeight, _deviceWidth;
   FirebaseService? _firebaseService;
 
@@ -28,28 +28,21 @@ class _ProductsAdminState extends State<ProductsAdmin> {
     return Column(
       children: [
         GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, 'add_product');
+          onTap: (){
+            Navigator.pushNamed(context, 'add_news');
           },
           child: Container(
             decoration: BoxDecoration(
-                color: Customcolors().accent,
-                borderRadius: BorderRadius.circular(20)),
+              color: Customcolors().accent,
+              borderRadius: BorderRadius.circular(20)
+            ),
             height: _deviceHeight! * 0.1,
             child: Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.add,
-                    size: 20,
-                    color: Customcolors().background,
-                  ),
-                  Text(
-                    "Add Product",
-                    style: TextStyle(
-                        fontSize: 20, color: Customcolors().background),
-                  )
+                  Icon(Icons.add,size: 20,color: Customcolors().background,),
+                  Text("Add News",style: TextStyle(fontSize: 20,color: Customcolors().background),)
                 ],
               ),
             ),

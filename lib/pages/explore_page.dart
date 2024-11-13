@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:five_pointed_star/five_pointed_star.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:puppymart/class/review_class.dart';
 import 'package:puppymart/pages/item_page.dart';
 import 'package:puppymart/services/firebase_service.dart';
 import 'package:puppymart/utilities/capitalize_text.dart';
@@ -113,6 +115,7 @@ class _ExplorePageState extends State<ExplorePage> {
                     },
                     child: Container(
                       margin: EdgeInsets.symmetric(horizontal: _deviceWidth!*0.05),
+                      padding: EdgeInsets.symmetric(vertical: _deviceHeight!*0.001),
                       width: 160,
                       child: Column(children: [
                         Container(
@@ -138,7 +141,7 @@ class _ExplorePageState extends State<ExplorePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const RatingStar(size: 13),
+                            _reviews(_product['productId'].toString()),
                             Text(_product['price'].toString())
                           ],
                         )
@@ -148,6 +151,27 @@ class _ExplorePageState extends State<ExplorePage> {
                 });
           } else {
             return const CircularProgressIndicator();
+          }
+        });
+  }
+
+  Widget _reviews(String _proId) {
+    return FutureBuilder(
+        future:
+            ReviewClass().reviewsCount(_proId),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            int currentRate = snapshot.hasData ? snapshot.data! : 4;
+            return FivePointedStar(
+              count: 5,
+              gap: 4,
+              size: const Size(13, 13),
+              defaultSelectedCount: currentRate==0? 4: currentRate,
+              selectedColor: Colors.yellow,
+              disabled: true,
+            );
+          } else {
+            return Container();
           }
         });
   }

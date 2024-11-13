@@ -200,9 +200,7 @@ class _ItemPageState extends State<ItemPage> {
             ReviewClass().reviewsCount(widget.product['productId'].toString()),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            int currentRate = snapshot.data!;
-            print(currentRate);
-            print('22323242423fg gfdg fgdf ');
+            int currentRate = snapshot.hasData ? snapshot.data! : 4;
             return FivePointedStar(
               count: 5,
               gap: 4,
