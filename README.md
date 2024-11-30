@@ -1,16 +1,76 @@
-# puppymart
+# 🐾 Puppy Mart
 
-A new Flutter project.
+Puppy Mart is a user-friendly dog food e-commerce mobile app built with **Flutter** and **Firebase**.  
+Designed to meet the needs of dog owners, it provides a seamless platform for purchasing nutritious dog food, exploring pet-related blogs, and managing orders.  
+The app includes an intuitive admin panel for efficient product and order management.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🧐 Features
 
-A few resources to get you started if this is your first Flutter project:
+### For Dog Owners
+- **View Dog Food & Nutrition**: Browse a variety of nutritious options for your dog.  
+- **Read Pet-Related Blogs**: Stay informed with blogs about pet care, training, and health.  
+- **Search Products**: Quickly find products with a search bar.  
+- **Add to Cart**: Seamlessly add products to your cart for convenient shopping.  
+- **Place Orders**: Effortlessly place orders and track their status.  
+- **Order History**: View previously placed orders for reference.  
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### For Admins
+- **Admin Login**: Exclusive access for administrators.  
+- **Add Products**: Add new products to the store inventory.  
+- **Remove Products**: Remove outdated or unavailable products.  
+- **Show Orders**: View and manage customer orders.  
+- **Add Blogs**: Publish engaging blogs for the community.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+## 💻 Built With
+
+- **Frontend**: Flutter  
+- **Backend**: Firebase (Authentication, Firestore, and Storage)
+
+---
+
+<h2>🛠️ Installation Steps:</h2>
+
+<p>1. Clone the repository:</p>
+
+```
+git clone https://github.com/Shana2002/puppy-mart.git
+```
+
+<p>2. Install dependencies:</p>
+
+```
+flutter pub get
+```
+
+<p>3. Run the app:</p>
+
+```
+flutter run
+```
+
+## 🍰 Contribution Guidelines
+
+We welcome contributions to **Puppy Mart**! To contribute:  
+1. Fork the repository.  
+2. Create a new branch for your feature or bug fix.  
+3. Submit a pull request describing your changes.  
+
+---
+
+## 🛡️ License
+
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## 💖 Like My Work?
+
+If you find **Puppy Mart** helpful or have suggestions, feel free to connect!  
+
+- **Name**: Hansaka Ravishan  
+- **Email**: hansakaravi02@gmail.com 
+- **GitHub**: [Shana2002](https://github.com/shana2002)
