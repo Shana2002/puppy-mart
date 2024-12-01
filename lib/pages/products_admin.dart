@@ -25,41 +25,45 @@ class _ProductsAdminState extends State<ProductsAdmin> {
   Widget build(BuildContext context) {
     _deviceHeight = MediaQuery.of(context).size.height;
     _deviceWidth = MediaQuery.of(context).size.width;
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, 'add_product');
-          },
-          child: Container(
-            decoration: BoxDecoration(
-                color: Customcolors().accent,
-                borderRadius: BorderRadius.circular(20)),
-            height: _deviceHeight! * 0.1,
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.add,
-                    size: 20,
-                    color: Customcolors().background,
-                  ),
-                  Text(
-                    "Add Product",
-                    style: TextStyle(
-                        fontSize: 20, color: Customcolors().background),
-                  )
-                ],
+    return Container(
+      width: _deviceHeight!*0.6,
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, 'add_product');
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Customcolors().accent,
+                  borderRadius: BorderRadius.circular(20)),
+              height: _deviceHeight! * 0.1,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.add,
+                      size: 20,
+                      color: Customcolors().background,
+                    ),
+                    Text(
+                      "Add Product",
+                      style: TextStyle(
+                          fontSize: 20, color: Customcolors().background),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        Container(
-          height: _deviceHeight! * 0.71,
-          child: _productList(),
-        ),
-      ],
+          Container(
+            padding: EdgeInsets.only(bottom: _deviceHeight!*0.05),
+            height: _deviceHeight! * 0.71,
+            child: _productList(),
+          ),
+        ],
+      ),
     );
   }
 

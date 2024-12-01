@@ -39,19 +39,20 @@ class _AdminHomeState extends State<AdminHome> {
     return Scaffold(
       bottomNavigationBar: _bottomNavigationBar(),
       body: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: _deviceWidth! * 0.05),
-          child: Column(
-            children: [
-              Container(
-                height: _deviceHeight! * 0.07,
-                child: _appBar(),
-              ),
-              Container(
-                height: _deviceHeight! * 0.82,
-                child: _pages[_currntPage],
-              )
-            ],
+        child: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: _deviceWidth! * 0.05),
+            child: Column(
+              children: [
+                Container(
+                  height: _deviceHeight! * 0.07,
+                  child: _appBar(),
+                ),
+                Container(
+                  child: _pages[_currntPage],
+                )
+              ],
+            ),
           ),
         ),
       ),

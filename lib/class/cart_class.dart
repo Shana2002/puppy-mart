@@ -1,17 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:puppymart/providers/cart_provider.dart';
-import 'package:puppymart/services/firebase_service.dart';
 
 class CartClass {
   String cusID;
   String? productId;
   String? qty;
   List cart = [];
-  FirebaseService? _firebaseService;
   CartProvider? _cartProvider;
   CartClass({required this.cusID}) {
-    _firebaseService = GetIt.instance.get<FirebaseService>();
     _cartProvider = GetIt.instance.get<CartProvider>();
   }
 
