@@ -4,7 +4,6 @@ import 'package:get_it/get_it.dart';
 import 'package:puppymart/pages/add_news.dart';
 import 'package:puppymart/pages/add_product.dart';
 import 'package:puppymart/pages/admin_home.dart';
-import 'package:puppymart/pages/allitems_page.dart';
 import 'package:puppymart/pages/cart.dart';
 import 'package:puppymart/pages/home_page.dart';
 import 'package:puppymart/pages/landing_page.dart';
@@ -39,14 +38,14 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: 'landing',
       routes: {
-        'landing': (context) => LandingPage(),
-        'homepage': (context) => HomePage(),
-        'cart': (context) => Cart(),
-        'orderhistory': (context) => OrderHistory(),
-        'updateprofile': (context) => UpdateProfile(),
-        'adminpage' : (context) => AdminHome(),
-        'add_product' : (context) => AddProduct(),
-        'add_news' : (context) => AddNews(),
+        'landing': (context) => const LandingPage(),
+        'homepage': (context) => const HomePage(),
+        'cart': (context) => const Cart(),
+        'orderhistory': (context) => const OrderHistory(),
+        'updateprofile': (context) => const UpdateProfile(),
+        'adminpage' : (context) => const AdminHome(),
+        'add_product' : (context) => const AddProduct(),
+        'add_news' : (context) => const AddNews(),
        },
     );
   }

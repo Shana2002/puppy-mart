@@ -1,9 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:puppymart/class/cart_class.dart';
 import 'package:puppymart/class/order_class.dart';
-import 'package:puppymart/pages/item_page.dart';
 import 'package:puppymart/services/firebase_service.dart';
 import 'package:puppymart/utilities/CustomColors.dart';
 
@@ -35,7 +33,7 @@ class _CartState extends State<Cart> {
           child: Column(
         children: [
           _appBar(),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           _cartItemContainer(),
@@ -85,11 +83,11 @@ class _CartState extends State<Cart> {
     );
   }
 
-  Widget _cartView() {
-    return ListView(
-      children: [],
-    );
-  }
+  // Widget _cartView() {
+  //   return ListView(
+  //     children: [],
+  //   );
+  // }
 
   Widget _bottomConatiner() {
     return Container(
@@ -109,13 +107,13 @@ class _CartState extends State<Cart> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 "Total ",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
               ),
               Text(
                 "LKR ${_cartClass!.calculateSum().toString()}",
-                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
+                style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
               ),
             ],
           ),
@@ -171,7 +169,7 @@ class _CartState extends State<Cart> {
                         color: Colors.black.withOpacity(0.15),
                         spreadRadius: 0,
                         blurRadius: 20, // Increased blur radius
-                        offset: Offset(0, 4),
+                        offset: const Offset(0, 4),
                       )
                     ]),
                 child: Row(
@@ -191,14 +189,14 @@ class _CartState extends State<Cart> {
                                   image:
                                       NetworkImage(_productDetail['image']))),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 10,
                         ),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
+                            SizedBox(
                               width: _deviceWidth! * 0.45,
                               child: Text(
                                 _productDetail['name'],
@@ -241,13 +239,11 @@ class _CartState extends State<Cart> {
                                     _productDetail['price']);
                               });
                             },
-                            child: Container(
-                              child: Icon(Icons.add),
-                            ),
+                            child: const Icon(Icons.add),
                           ),
                           Text(
                             _item['qty'].toString(),
-                            style: TextStyle(fontSize: 15),
+                            style: const TextStyle(fontSize: 15),
                           ),
                           GestureDetector(
                             onTap: () {
@@ -256,9 +252,7 @@ class _CartState extends State<Cart> {
                                     .minesCart(_productDetail['productId']);
                               });
                             },
-                            child: Container(
-                              child: Icon(Icons.remove),
-                            ),
+                            child: const Icon(Icons.remove),
                           ),
                         ],
                       ),
@@ -282,7 +276,7 @@ class _CartState extends State<Cart> {
             Map _itemCart = _cart[_index];
             return _listTile(_itemCart, _index);
           } else {
-            return Center(
+            return const Center(
               child: Text("empty"),
             );
           }
@@ -327,7 +321,7 @@ class _CartState extends State<Cart> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          icon: Icon(Icons.done),
+          icon: const Icon(Icons.done),
           content: Center(child: Text('Order added successfully!',style: TextStyle(color: Customcolors().accent,fontWeight: FontWeight.bold),)),
         );
       },

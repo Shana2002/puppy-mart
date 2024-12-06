@@ -1,9 +1,7 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:puppymart/class/news.dart';
-import 'package:puppymart/services/firebase_service.dart';
 import 'package:puppymart/utilities/CustomColors.dart';
 import 'package:puppymart/utilities/decoration_class.dart';
 
@@ -18,17 +16,17 @@ class _AddNewsState extends State<AddNews> {
   final GlobalKey<FormState> _addProduct = GlobalKey<FormState>();
   double? _deviceHeight, _deviceWidth;
 
-  String? _name, _description, _brand, _type;
-  num? _age, _price;
+  String? _name, _description;
+  // num? _age, _price;
 
   File? _image;
 
-  FirebaseService? _firebaseService;
+  // FirebaseService? _firebaseService;
 
   @override
   void initState() {
     super.initState();
-    _firebaseService = GetIt.instance.get<FirebaseService>();
+    // _firebaseService = GetIt.instance.get<FirebaseService>();
   }
 
   @override

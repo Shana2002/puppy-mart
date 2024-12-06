@@ -1,19 +1,14 @@
-import 'dart:math';
-
 import 'package:five_pointed_star/five_pointed_star.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
-import 'package:puppymart/class/favourite_class.dart';
 import 'package:puppymart/class/review_class.dart';
 import 'package:puppymart/pages/item_page.dart';
 import 'package:puppymart/services/firebase_service.dart';
-import 'package:puppymart/utilities/CustomColors.dart';
 import 'package:puppymart/widgets/favourite_icon.dart';
 import 'package:puppymart/widgets/home_page_app_bar.dart';
 
 class AllitemsPage extends StatefulWidget {
-  AllitemsPage({super.key});
+  const AllitemsPage({super.key});
 
   @override
   State<AllitemsPage> createState() => _AllitemsPageState();
@@ -23,7 +18,7 @@ class _AllitemsPageState extends State<AllitemsPage> {
   double? _deviceHeight, _deviceWidth;
 
   FirebaseService? _firebaseService;
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   List _allProducts = [];
   List _filteredProducts = [];
 
@@ -78,7 +73,7 @@ class _AllitemsPageState extends State<AllitemsPage> {
     _deviceHeight = MediaQuery.of(context).size.height;
     return Column(
       children: [
-        HomePageAppBar(),
+        const HomePageAppBar(),
         _searchBar(),
         _productGridview(),
       ],
@@ -93,7 +88,7 @@ class _AllitemsPageState extends State<AllitemsPage> {
         controller: _searchController,
         decoration: InputDecoration(
           hintText: "Search here",
-          prefixIcon: Icon(Icons.search),
+          prefixIcon: const Icon(Icons.search),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
           ),
@@ -119,7 +114,7 @@ class _AllitemsPageState extends State<AllitemsPage> {
               childAspectRatio: (1 / 1.3)),
           itemCount: _filteredProducts.length,
           itemBuilder: (context, index) {
-            Map _product = _filteredProducts[index];
+            Map  _product = _filteredProducts[index];
             return GestureDetector(
               onTap: () {
                 Navigator.push(context,
@@ -149,7 +144,7 @@ class _AllitemsPageState extends State<AllitemsPage> {
                       ),
                       Text(
                         _product['name'],
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w800),
                       ),
                       Row(
@@ -170,10 +165,10 @@ class _AllitemsPageState extends State<AllitemsPage> {
     );
   }
 
-  Widget _reviews(String _proId) {
+  Widget _reviews(String proId) {
     return FutureBuilder(
         future:
-            ReviewClass().reviewsCount(_proId),
+            ReviewClass().reviewsCount(proId),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             int currentRate = snapshot.hasData ? snapshot.data! : 4;

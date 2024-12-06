@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:five_pointed_star/five_pointed_star.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -8,7 +7,6 @@ import 'package:puppymart/pages/item_page.dart';
 import 'package:puppymart/services/firebase_service.dart';
 import 'package:puppymart/utilities/capitalize_text.dart';
 import 'package:puppymart/widgets/home_page_app_bar.dart';
-import 'package:puppymart/widgets/rating_star.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -37,9 +35,9 @@ class _ExplorePageState extends State<ExplorePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            HomePageAppBar(),
+            const HomePageAppBar(),
             _dogBanner(),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             _topSaleContainer("Top Sale"),

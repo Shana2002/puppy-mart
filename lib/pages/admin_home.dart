@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:puppymart/pages/news_admin.dart';
@@ -20,9 +19,9 @@ class _AdminHomeState extends State<AdminHome> {
   FirebaseService? _firebaseService;
 
   final List<Widget> _pages = [
-    ProductsAdmin(),
-    OrdersAdmin(),
-    NewsAdmin(),
+    const ProductsAdmin(),
+    const OrdersAdmin(),
+    const NewsAdmin(),
   ];
   int _currntPage = 0;
 
@@ -44,7 +43,7 @@ class _AdminHomeState extends State<AdminHome> {
             padding: EdgeInsets.symmetric(horizontal: _deviceWidth! * 0.05),
             child: Column(
               children: [
-                Container(
+                SizedBox(
                   height: _deviceHeight! * 0.07,
                   child: _appBar(),
                 ),
@@ -81,30 +80,30 @@ class _AdminHomeState extends State<AdminHome> {
     );
   }
 
-  Widget _buttonRow() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: _deviceHeight! * 0.01),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          GestureDetector(
-              child: const Text(
-            "Products",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          )),
-          GestureDetector(
-              child: const Text(
-            "Orders",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          )),
-        ],
-      ),
-    );
-  }
+  // Widget _buttonRow() {
+  //   return Container(
+  //     padding: EdgeInsets.symmetric(vertical: _deviceHeight! * 0.01),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //       mainAxisSize: MainAxisSize.max,
+  //       crossAxisAlignment: CrossAxisAlignment.center,
+  //       children: [
+  //         GestureDetector(
+  //             child: const Text(
+  //           "Products",
+  //           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+  //         )),
+  //         GestureDetector(
+  //             child: const Text(
+  //           "Orders",
+  //           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+  //         )),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-// sandali sanara
+
   Widget _bottomNavigationBar() {
     return BottomNavigationBar(
         unselectedItemColor: Color.fromARGB(255, 190, 190, 190),
