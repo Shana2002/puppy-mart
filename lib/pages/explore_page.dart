@@ -1,4 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:five_pointed_star/five_pointed_star.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:puppymart/class/review_class.dart';
+import 'package:puppymart/pages/item_page.dart';
+import 'package:puppymart/services/firebase_service.dart';
+import 'package:puppymart/utilities/capitalize_text.dart';
 import 'package:puppymart/widgets/home_page_app_bar.dart';
 
 class ExplorePage extends StatefulWidget {
@@ -11,24 +18,34 @@ class ExplorePage extends StatefulWidget {
 class _ExplorePageState extends State<ExplorePage> {
   double? _deviceHeight, _deviceWidth;
 
+  FirebaseService? _firebaseService;
+
+  @override
+  void initState() {
+    super.initState();
+    _firebaseService = GetIt.instance.get<FirebaseService>();
+  }
+
   @override
   Widget build(BuildContext context) {
     _deviceWidth = MediaQuery.of(context).size.width;
     _deviceHeight = MediaQuery.of(context).size.height;
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          HomePageAppBar(),
-          _dogBanner(),
-          SizedBox(
-            height: 20,
-          ),
-          _topSaleContainer("Top Sale"),
-          _itemConatiner(),
-          _topSaleContainer("Top Offers"),
-          _itemConatiner(),
-        ],
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const HomePageAppBar(),
+            _dogBanner(),
+            const SizedBox(
+              height: 20,
+            ),
+            _topSaleContainer("Top Sale"),
+            _itemConatiner(),
+            _topSaleContainer("Top Offers"),
+            _itemConatiner(),
+          ],
+        ),
       ),
     );
   }
@@ -37,7 +54,7 @@ class _ExplorePageState extends State<ExplorePage> {
     return Container(
       width: _deviceWidth! * 0.80,
       height: _deviceHeight! * 0.20,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           image: DecorationImage(
               fit: BoxFit.contain,
               image: AssetImage("assests/images/dogBanner.png"))),
@@ -72,99 +89,88 @@ class _ExplorePageState extends State<ExplorePage> {
           bottom: _deviceHeight! * 0.02),
       // margin: EdgeInsets.symmetric(horizontal: _deviceWidth!*0.05,vertical: _deviceHeight!*0.02),
       height: 200,
-      child: ListView(
-        // This next line does the trick.
-        scrollDirection: Axis.horizontal,
-        children: <Widget>[
-          _item(),
-          const SizedBox(
-            width: 10,
-          ),
-          _item(),
-          const SizedBox(
-            width: 10,
-          ),
-          _item(),
-          const SizedBox(
-            width: 10,
-          ),
-          _item(),
-          const SizedBox(
-            width: 10,
-          ),
-          _item(),
-          const SizedBox(
-            width: 10,
-          ),
-          _item(),
-          const SizedBox(
-            width: 10,
-          ),
-          
-        ],
-      ),
+      child: _prodctListHorizontal(),
     );
   }
 
-  Widget _item() {
-    return Container(
-      width: 160,
-      child: Column(
-        children: [
-          Container(
-            width: 160,
-            height: 150,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                  fit: BoxFit.contain,
-                  image: AssetImage("assests/images/food.png")),
-            ),
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Text(
-            "Pedegree 400g",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.star,
-                    size: 13,
-                    color: Colors.yellow,
-                  ),
-                  Icon(
-                    Icons.star,
-                    size: 13,
-                    color: Colors.yellow,
-                  ),
-                  Icon(
-                    Icons.star,
-                    size: 13,
-                    color: Colors.yellow,
-                  ),
-                  Icon(
-                    Icons.star,
-                    size: 13,
-                    color: Colors.yellow,
-                  ),
-                  Icon(
-                    Icons.star,
-                    size: 13,
-                    color: Colors.black,
-                  ),
-                ],
-              ),
-              Text("1500")
-            ],
-          )
-        ],
-      ),
-    );
+  Widget _prodctListHorizontal() {
+    return StreamBuilder<QuerySnapshot>(
+        stream: _firebaseService!.getProducts(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            List _products = snapshot.data!.docs.map((e) => e.data()).toList();
+            return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: _products.length,
+                itemBuilder: (context, index) {
+                  Map _product = _products[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(context,
+                            MaterialPageRoute(builder: (BuildContext _context) {
+                          return ItemPage(product: _product);
+                        }));
+                    },
+                    child: Container(
+                      margin: EdgeInsets.symmetric(horizontal: _deviceWidth!*0.05),
+                      padding: EdgeInsets.symmetric(vertical: _deviceHeight!*0.001),
+                      width: 160,
+                      child: Column(children: [
+                        Container(
+                          width: 160,
+                          height: 150,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(_product['image'])),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          CapitalizeText(text: _product['name']).capitalize(),
+                          overflow: TextOverflow.fade,
+                          maxLines: 1,
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w800),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            _reviews(_product['productId'].toString()),
+                            Text(_product['price'].toString())
+                          ],
+                        )
+                      ]),
+                    ),
+                  );
+                });
+          } else {
+            return const CircularProgressIndicator();
+          }
+        });
+  }
+
+  Widget _reviews(String _proId) {
+    return FutureBuilder(
+        future:
+            ReviewClass().reviewsCount(_proId),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            int currentRate = snapshot.hasData ? snapshot.data! : 4;
+            return FivePointedStar(
+              count: 5,
+              gap: 4,
+              size: const Size(13, 13),
+              defaultSelectedCount: currentRate==0? 4: currentRate,
+              selectedColor: Colors.yellow,
+              disabled: true,
+            );
+          } else {
+            return Container();
+          }
+        });
   }
 }

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:puppymart/pages/item_page.dart';
+import 'package:get_it/get_it.dart';
+import 'package:puppymart/class/cart_class.dart';
+import 'package:puppymart/class/order_class.dart';
+import 'package:puppymart/services/firebase_service.dart';
+import 'package:puppymart/utilities/CustomColors.dart';
 
 class Cart extends StatefulWidget {
   const Cart({super.key});
@@ -10,6 +14,15 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
   double? _deviceHeight, _deviceWidth;
+  CartClass? _cartClass;
+  FirebaseService? _firebaseService;
+
+  @override
+  void initState() {
+    super.initState();
+    _cartClass = GetIt.instance.get<CartClass>();
+    _firebaseService = GetIt.instance.get<FirebaseService>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +33,7 @@ class _CartState extends State<Cart> {
           child: Column(
         children: [
           _appBar(),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           _cartItemContainer(),
@@ -66,19 +79,15 @@ class _CartState extends State<Cart> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: _deviceWidth! * 0.05),
       height: _deviceHeight! * 0.7,
-      child: _cartView(),
+      child: _cartView1(),
     );
   }
 
-  Widget _cartView() {
-    return ListView(
-      children: [
-        _listTile(),
-        _listTile(),
-        _listTile(),
-      ],
-    );
-  }
+  // Widget _cartView() {
+  //   return ListView(
+  //     children: [],
+  //   );
+  // }
 
   Widget _bottomConatiner() {
     return Container(
@@ -93,18 +102,18 @@ class _CartState extends State<Cart> {
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 "Total ",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
               ),
               Text(
-                "LKR 1920",
-                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
+                "LKR ${_cartClass!.calculateSum().toString()}",
+                style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
               ),
             ],
           ),
@@ -112,10 +121,7 @@ class _CartState extends State<Cart> {
             width: _deviceWidth! * 0.9,
             child: TextButton(
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (BuildContext _context) {
-                  return const ItemPage();
-                }));
+                _conformOrder();
               },
               style: TextButton.styleFrom(
                 foregroundColor: const Color.fromARGB(255, 255, 255, 255),
@@ -135,83 +141,190 @@ class _CartState extends State<Cart> {
     );
   }
 
-  Widget _listTile() {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      padding: EdgeInsets.symmetric(horizontal: _deviceHeight! * 0.01),
-      height: 100,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.15),
-              spreadRadius: 0,
-              blurRadius: 20, // Increased blur radius
-              offset: Offset(0, 4),
-            )
-          ]),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            children: [
-              Container(
-                height: 90,
-                width: 100,
-                decoration: const BoxDecoration(
+  Widget _listTile(Map? _item, int index) {
+    String _productId = _item!['id'];
+    return FutureBuilder<Map<String, dynamic>>(
+        future: _firebaseService!.getProductDetails(_productId),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            Map<String, dynamic> _productDetail = snapshot.data!;
+            return Dismissible(
+              key: ValueKey<int>(index),
+              onDismissed: (direction) {
+                setState(() {
+                  _cartClass!.removeCart(index);
+                });
+              },
+              direction: DismissDirection.startToEnd,
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 10),
+                padding:
+                    EdgeInsets.symmetric(horizontal: _deviceHeight! * 0.01),
+                height: 100,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
                     color: Colors.white,
-                    image: DecorationImage(
-                        fit: BoxFit.contain,
-                        image: AssetImage("assests/images/food.png"))),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.15),
+                        spreadRadius: 0,
+                        blurRadius: 20, // Increased blur radius
+                        offset: const Offset(0, 4),
+                      )
+                    ]),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          height: 90,
+                          width: 100,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              image: DecorationImage(
+                                  fit: BoxFit.contain,
+                                  image:
+                                      NetworkImage(_productDetail['image']))),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: _deviceWidth! * 0.45,
+                              child: Text(
+                                _productDetail['name'],
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                style: const TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 7,
+                            ),
+                            Text(
+                              _productDetail['price'].toString(),
+                              style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: _deviceHeight! * 0.01),
+                      height: 85,
+                      width: 30,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: const Color.fromARGB(64, 167, 167, 167),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _cartClass!.addTocart(
+                                    _productDetail['productId'],
+                                    1,
+                                    _productDetail['price']);
+                              });
+                            },
+                            child: const Icon(Icons.add),
+                          ),
+                          Text(
+                            _item['qty'].toString(),
+                            style: const TextStyle(fontSize: 15),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _cartClass!
+                                    .minesCart(_productDetail['productId']);
+                              });
+                            },
+                            child: const Icon(Icons.remove),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Pedegree 400g",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    height: 7,
-                  ),
-                  Text(
-                    "LKR 1000",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              )
-            ],
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: _deviceHeight! * 0.01),
-            height: 85,
-            width: 30,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: const Color.fromARGB(64, 167, 167, 167),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  child: Icon(Icons.add),
-                ),
-                Text(
-                  "1",
-                  style: TextStyle(fontSize: 15),
-                ),
-                Container(
-                  child: Icon(Icons.remove),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+            );
+          } else {
+            return Container();
+          }
+        });
+  }
+
+  Widget _cartView1() {
+    List? _cart = _cartClass!.cart;
+    return ListView.builder(
+        itemCount: _cart.length,
+        itemBuilder: (BuildContext _context, int _index) {
+          if (_cart.isNotEmpty) {
+            Map _itemCart = _cart[_index];
+            return _listTile(_itemCart, _index);
+          } else {
+            return const Center(
+              child: Text("empty"),
+            );
+          }
+        });
+  }
+
+  void _conformOrder() async {
+    if (_cartClass!.cart.isNotEmpty) {
+      if (_verifyAddress()) {
+        bool isAdd = await OrderClass().addToOrder();
+        if (isAdd) {
+          _showOrderConfirmationDialog(context);
+          // Wait for 3 seconds before popping the screen
+          await Future.delayed(Duration(seconds: 2));
+          Navigator.pop(context);
+          Navigator.pop(context);
+        }
+      } else {
+        Navigator.pushNamed(context, 'updateprofile');
+      }
+    } else {
+      print("error");
+    }
+  }
+
+  bool _verifyAddress() {
+    final currentUser = _firebaseService?.currentUser;
+
+    if (currentUser != null &&
+        currentUser['address1']?.toString().isNotEmpty == true &&
+        currentUser['address2']?.toString().isNotEmpty == true &&
+        currentUser['city']?.toString().isNotEmpty == true &&
+        currentUser['mobile']?.toString().isNotEmpty == true) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void _showOrderConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          icon: const Icon(Icons.done),
+          content: Center(child: Text('Order added successfully!',style: TextStyle(color: Customcolors().accent,fontWeight: FontWeight.bold),)),
+        );
+      },
     );
   }
 }

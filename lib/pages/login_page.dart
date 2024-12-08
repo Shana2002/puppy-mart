@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:puppymart/class/cart_class.dart';
+import 'package:puppymart/providers/cart_provider.dart';
 import 'package:puppymart/services/firebase_service.dart';
 import 'package:puppymart/utilities/decoration_class.dart';
 
@@ -305,7 +307,31 @@ class _LoginpageState extends State<Loginpage> {
       bool _result = await _firebaseService!
           .loginUser(email: _varEmailLogin!, password: _varPasswordLogin!);
       if (_result) {
-        Navigator.popAndPushNamed(context, 'homepage');
+        final userName = _firebaseService!.userName();
+
+        if (userName == 'admin@puppymart.com') {
+          Navigator.popAndPushNamed(context, 'adminpage');
+
+          if (!GetIt.instance.isRegistered<CartProvider>()) {
+            GetIt.instance.registerSingleton<CartProvider>(CartProvider());
+          }
+
+          if (!GetIt.instance.isRegistered<CartClass>()) {
+            GetIt.instance.registerSingleton<CartClass>(
+                CartClass(cusID: userName.toString()));
+          }
+        } else {
+          if (!GetIt.instance.isRegistered<CartProvider>()) {
+            GetIt.instance.registerSingleton<CartProvider>(CartProvider());
+          }
+
+          if (!GetIt.instance.isRegistered<CartClass>()) {
+            GetIt.instance.registerSingleton<CartClass>(
+                CartClass(cusID: userName.toString()));
+          }
+
+          Navigator.popAndPushNamed(context, 'homepage');
+        }
       } else {
         setState(() {
           _errorMessage = "User Name or Password Wrong";
@@ -328,4 +354,6 @@ class _LoginpageState extends State<Loginpage> {
       }
     }
   }
+
+  void _create() {}
 }

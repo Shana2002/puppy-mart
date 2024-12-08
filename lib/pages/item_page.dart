@@ -1,7 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:puppymart/class/cart_class.dart';
+import 'package:puppymart/class/review_class.dart';
+import 'package:puppymart/class/user_class.dart';
+import 'package:puppymart/providers/cart_provider.dart';
+import 'package:puppymart/widgets/home_page_app_bar.dart';
+import 'package:five_pointed_star/five_pointed_star.dart';
 
 class ItemPage extends StatefulWidget {
-  const ItemPage({super.key});
+  final Map product;
+  const ItemPage({super.key, required this.product});
 
   @override
   State<ItemPage> createState() => _ItemPageState();
@@ -9,6 +18,19 @@ class ItemPage extends StatefulWidget {
 
 class _ItemPageState extends State<ItemPage> {
   double? _deviceHeight, _deviceWidth;
+  CartClass? _cart;
+  CartProvider? _cartProvider;
+  final GlobalKey<FormState> _addReviewFormKey = GlobalKey<FormState>();
+  bool rateStart = false;
+  int ratingCount = 4;
+  String? rateString;
+
+  @override
+  void initState() {
+    super.initState();
+    _cart = GetIt.instance.get<CartClass>();
+    _cartProvider = GetIt.instance.get<CartProvider>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,14 +99,37 @@ class _ItemPageState extends State<ItemPage> {
             const SizedBox(
               height: 20,
             ),
+            Text(
+              "Reviews",
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
+            ),
             _reviews(),
-            _reviewCard(),
+            _reviewsCard(),
             const SizedBox(
               height: 20,
             ),
-            _addReview(),
+            _addreviewform()
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _addreviewform() {
+    return Form(
+      key: _addReviewFormKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _ratingStar(),
+          _addReview(),
+          const SizedBox(
+            height: 10,
+          ),
+          _addReviewButton()
+        ],
       ),
     );
   }
@@ -93,115 +138,80 @@ class _ItemPageState extends State<ItemPage> {
     return Container(
       width: _deviceWidth! * 0.9,
       height: _deviceHeight! * 0.4,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
           image: DecorationImage(
               fit: BoxFit.contain,
-              image: AssetImage("assests/images/food.png"))),
+              image: NetworkImage(widget.product['image']))),
     );
   }
 
   Widget _descriptionTitle() {
-    return const Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Text(
-          "Pedigree",
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
+    return SizedBox(
+      width: _deviceWidth! * 0.9,
+      child: Text(
+        widget.product["name"],
+        style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
+        overflow: TextOverflow.ellipsis,
+        maxLines: 2,
+        textAlign: TextAlign.start,
+      ),
+    );
+  }
+
+  Widget _ratingStar() {
+    return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: _deviceWidth! * 0.27, vertical: _deviceHeight! * 0.01),
+      child: Center(
+        child: FivePointedStar(
+          count: 5,
+          gap: 4,
+          defaultSelectedCount: 4,
+          selectedColor: Colors.yellow,
+          onChange: (_count) {
+            ratingCount = _count;
+          },
         ),
-      ],
+      ),
     );
   }
 
   Widget _priceConatianer() {
-    return const Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          "LKR 12500",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          "LKR ${widget.product['price']}",
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        Row(
-          children: [
-            Icon(
-              Icons.star,
-              size: 25,
-              color: Colors.yellow,
-            ),
-            Icon(
-              Icons.star,
-              size: 25,
-              color: Colors.yellow,
-            ),
-            Icon(
-              Icons.star,
-              size: 25,
-              color: Colors.yellow,
-            ),
-            Icon(
-              Icons.star,
-              size: 25,
-              color: Colors.yellow,
-            ),
-            Icon(
-              Icons.star,
-              size: 25,
-              color: Colors.black,
-            ),
-          ],
-        ),
+        _reviews()
       ],
     );
   }
 
   Widget _descriptionDetails() {
-    return const Text(
-        "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).");
+    return Text(widget.product['description']);
   }
 
   Widget _reviews() {
-    return const Column(
-      children: [
-        Text(
-          "Reviews",
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.star,
-              size: 25,
-              color: Colors.yellow,
-            ),
-            Icon(
-              Icons.star,
-              size: 25,
-              color: Colors.yellow,
-            ),
-            Icon(
-              Icons.star,
-              size: 25,
-              color: Colors.yellow,
-            ),
-            Icon(
-              Icons.star,
-              size: 25,
-              color: Colors.yellow,
-            ),
-            Icon(
-              Icons.star,
-              size: 25,
-              color: Colors.black,
-            ),
-          ],
-        ),
-        // _reviewCard()
-      ],
-    );
+    return FutureBuilder(
+        future:
+            ReviewClass().reviewsCount(widget.product['productId'].toString()),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            int currentRate = snapshot.hasData ? snapshot.data! : 4;
+            return FivePointedStar(
+              count: 5,
+              gap: 4,
+              defaultSelectedCount: currentRate,
+              selectedColor: Colors.yellow,
+              disabled: true,
+            );
+          } else {
+            return CircularProgressIndicator();
+          }
+        });
   }
 
   Widget _buttonContainer() {
@@ -231,7 +241,10 @@ class _ItemPageState extends State<ItemPage> {
           SizedBox(
             width: _deviceWidth! * 0.43,
             child: TextButton(
-              onPressed: () {},
+              onPressed: () {
+                _cart!.addTocart(widget.product['productId'].toString(), 1,
+                    widget.product['price']);
+              },
               style: TextButton.styleFrom(
                 foregroundColor: const Color.fromARGB(255, 255, 255, 255),
                 backgroundColor: const Color.fromARGB(255, 255, 83, 83),
@@ -250,27 +263,52 @@ class _ItemPageState extends State<ItemPage> {
     );
   }
 
-  Widget _reviewCard() {
-    return ListView(
-      shrinkWrap: true, // allows ListView to size based on its content
-      physics: NeverScrollableScrollPhysics(),
-      children: [
-        const ListTile(
-          leading: Icon(Icons.person),
-          title: Text("Channa"),
-          subtitle: Text("hi"),
-        ),
-        const ListTile(
-          leading: Icon(Icons.person),
-          title: Text("Channa"),
-          subtitle: Text("hi"),
-        ),
-        const ListTile(
-          leading: Icon(Icons.person),
-          title: Text("Channa"),
-          subtitle: Text("hi"),
-        ),
-      ],
+  Widget _reviewsCard() {
+    return FutureBuilder(
+      future: ReviewClass().reviewsList(widget.product['productId']),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          List reviewsList = snapshot.data;
+          return Container(
+              width: _deviceWidth! * 0.8,
+              height: _deviceHeight! * 0.3,
+              child: ListView.builder(
+                  itemCount: reviewsList.length > 2 ? 2 : reviewsList.length,
+                  itemBuilder: (context, _index) {
+                    Map reviewList = reviewsList[_index];
+                    return Container(
+                      child: ListTile(
+                        leading: Icon(Icons.person),
+                        title: FutureBuilder(
+                            future: UserClass()
+                                .getUserName(reviewList['reviewer'].toString()),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                Map userDetails = snapshot.data!;
+                                return Text(userDetails['name']);
+                              } else {
+                                return Text("No user found");
+                              }
+                            }),
+                        subtitle: Text(reviewList['review'].toString()),
+                      ),
+                    );
+                  }));
+          // List reviewsList = snapshot.data;
+          // return ListView.builder(
+          //     itemCount: reviewsList.length,
+          //     itemBuilder: (context, index) {
+          //       Map reviewList = reviewsList[index];
+          //       return ListTile(
+          //         leading: Icon(Icons.person),
+          //         title: Text(),
+          //         subtitle: Text(reviewList['review'].toString()),
+          //       );
+          //     });
+        } else {
+          return Text("data1");
+        }
+      },
     );
   }
 
@@ -279,7 +317,10 @@ class _ItemPageState extends State<ItemPage> {
       child: SizedBox(
         width: _deviceWidth! * 0.80,
         child: TextFormField(
-          style: TextStyle(color: Colors.white),
+          onChanged: (_value) {
+            rateString = _value;
+          },
+          style: TextStyle(color: Colors.black),
           cursorColor: Colors.white,
           decoration: const InputDecoration(
               hintText: "Add Review",
@@ -290,5 +331,35 @@ class _ItemPageState extends State<ItemPage> {
         ),
       ),
     );
+  }
+
+  Widget _addReviewButton() {
+    return SizedBox(
+      width: _deviceWidth! * 0.43,
+      child: TextButton(
+        onPressed: () {
+          addReview();
+        },
+        style: TextButton.styleFrom(
+          foregroundColor: const Color.fromARGB(255, 255, 255, 255),
+          backgroundColor: const Color.fromARGB(255, 86, 83, 255),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        child: const Text(
+          'Add Review',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+        ),
+      ),
+    );
+  }
+
+  void addReview() async {
+    await ReviewClass().addReview(
+        widget.product['productId'].toString(), rateString!, ratingCount);
+    setState(() {
+      rateString = "";
+    });
   }
 }
