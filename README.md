@@ -1,3 +1,5 @@
+![alt text](https://github.com/Shana2002/puppy-mart/blob/main/assests/images/puppymart-1.png?raw=true)
+
 # 🐾 Puppy Mart
 
 Puppy Mart is a user-friendly dog food e-commerce mobile app built with **Flutter** and **Firebase**.  
